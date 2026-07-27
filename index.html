@@ -1,1 +1,471 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>🧠 BRAIN ROAD</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;background:#10131c;color:white}
+button{font-family:inherit}
+#game{position:fixed;inset:0;overflow:hidden;background:#10131c}
+#sky{position:absolute;inset:0;background:linear-gradient(#17243d 0%,#354b67 55%,#151922 55%,#151922 100%)}
+#carpet{position:absolute;left:0;top:58%;width:100%;height:110px;background:linear-gradient(#720014,#d20b2f 20%,#b80024 50%,#d20b2f 80%,#720014);border-top:7px solid #f5c84c;border-bottom:7px solid #f5c84c;z-index:5}
+#ui{position:absolute;top:10px;left:0;width:100%;text-align:center;z-index:100;pointer-events:none}
+#title{font-size:25px;font-weight:800}
+#money{margin-top:6px;font-size:22px;font-weight:700}
+#hint{position:absolute;top:88px;left:0;width:100%;text-align:center;font-size:14px;z-index:100;pointer-events:none}
+#message{position:absolute;top:130px;left:0;width:100%;text-align:center;font-size:20px;font-weight:800;z-index:250;pointer-events:none}
+#musicButton{position:absolute;right:10px;top:10px;z-index:300;border:0;border-radius:12px;padding:10px 12px;background:#252a38;color:white;font-size:15px;font-weight:800}
+#luckyStatus{position:absolute;top:55px;left:10px;padding:8px 12px;border-radius:12px;background:#28b45a;color:white;font-size:14px;font-weight:800;z-index:150;display:none}
+#luckyStatus.active{display:block}
 
+.brain{
+position:absolute;
+top:calc(58% + 23px);
+left:-110px;
+width:110px;
+height:95px;
+display:flex;
+align-items:flex-end;
+justify-content:center;
+font-size:50px;
+z-index:30;
+user-select:none;
+filter:drop-shadow(0 5px 3px rgba(0,0,0,.6));
+cursor:pointer;
+font-weight:900;
+}
+
+.brain .price{
+position:absolute;
+bottom:63px;
+left:50%;
+transform:translateX(-50%);
+white-space:nowrap;
+font-size:14px;
+font-weight:900;
+color:#fff;
+background:rgba(0,0,0,.82);
+padding:4px 8px;
+border-radius:8px;
+border:2px solid #f5c84c;
+text-shadow:0 1px 2px #000;
+}
+
+.common{text-shadow:0 0 5px white}
+.rare{text-shadow:0 0 13px #4db8ff}
+.epic{text-shadow:0 0 16px #c45cff}
+.legendary{text-shadow:0 0 20px gold}
+.brainrotgod{text-shadow:0 0 22px #ff8c00,0 0 35px #ff4500}
+.secret{text-shadow:0 0 25px #fff,0 0 45px #ff00ff,0 0 65px gold}
+
+#collection{position:absolute;left:10px;right:10px;bottom:10px;max-height:24%;overflow-y:auto;padding:10px;border-radius:15px;background:rgba(0,0,0,.72);z-index:100}
+#collection h3{margin:0 0 8px}
+.card{display:inline-block;width:82px;margin:3px;text-align:center;font-size:12px}
+.icon{font-size:32px}
+
+#effect{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:32px;font-weight:900;opacity:0;pointer-events:none;z-index:800000;text-shadow:0 0 10px black,0 0 25px gold}
+.showGod{animation:god 1.3s}
+.showSecret{animation:secret 1.8s}
+@keyframes god{0%{opacity:0;transform:scale(.3)}20%{opacity:1;transform:scale(1.25)}70%{opacity:1}100%{opacity:0;transform:scale(1.5)}}
+@keyframes secret{0%{opacity:0;transform:scale(.2) rotate(-5deg)}15%{opacity:1;transform:scale(1.3)}45%{opacity:1;transform:scale(1)}75%{opacity:1;transform:scale(1.15)}100%{opacity:0;transform:scale(1.7)}}
+#flash{position:absolute;inset:0;background:white;opacity:0;pointer-events:none;z-index:700000}
+.flash{animation:flash .35s}
+@keyframes flash{0%{opacity:.8}100%{opacity:0}}
+
+#startMusic{position:absolute;inset:0;background:rgba(0,0,0,.88);z-index:999999;display:flex;align-items:center;justify-content:center}
+#startMusic button{padding:18px 28px;border:0;border-radius:15px;background:#d7192f;color:white;font-size:20px;font-weight:800}
+</style>
+</head>
+
+<body>
+<div id="game">
+<div id="sky"></div>
+<div id="carpet"></div>
+
+<div id="ui">
+<div id="title">🧠 BRAIN ROAD</div>
+<div id="money">💰 <span id="moneyText">500</span>円</div>
+</div>
+
+<button id="musicButton" onclick="toggleMusic()">🎵 BGM ON</button>
+<div id="luckyStatus">🍀 レア率UP</div>
+<div id="hint">🟥 ブレインロットをタップして購入！</div>
+<div id="message"></div>
+<div id="effect"></div>
+<div id="flash"></div>
+
+<div id="collection">
+<h3>📦 コレクション</h3>
+<div id="cards">まだ持っていません</div>
+</div>
+
+<div id="startMusic">
+<button onclick="startGame()">🎵 ゲーム開始</button>
+</div>
+</div>
+
+<script>
+const brains=[
+
+{name:"ポテト脳",icon:"🥔",rarity:"common",chance:12,price:50,income:5},
+{name:"カエル脳",icon:"🐸",rarity:"common",chance:10,price:100,income:8},
+{name:"にんじん脳",icon:"🥕",rarity:"common",chance:8,price:80,income:6},
+{name:"ハンバーガー脳",icon:"🍔",rarity:"common",chance:7,price:120,income:9},
+{name:"バナナ脳",icon:"🍌",rarity:"common",chance:7,price:100,income:8},
+{name:"スイカ脳",icon:"🍉",rarity:"common",chance:6,price:150,income:10},
+{name:"りんご脳",icon:"🍎",rarity:"common",chance:6,price:130,income:9},
+{name:"ポップコーン脳",icon:"🍿",rarity:"common",chance:5,price:180,income:12},
+{name:"ラーメン脳",icon:"🍜",rarity:"common",chance:5,price:200,income:13},
+{name:"おにぎり脳",icon:"🍙",rarity:"common",chance:5,price:220,income:14},
+{name:"ネコ脳",icon:"🐱",rarity:"common",chance:5,price:250,income:15},
+{name:"イヌ脳",icon:"🐶",rarity:"common",chance:4,price:280,income:17},
+{name:"ニワトリ脳",icon:"🐔",rarity:"common",chance:4,price:300,income:18},
+{name:"ブタ脳",icon:"🐷",rarity:"common",chance:4,price:320,income:20},
+{name:"サル脳",icon:"🐵",rarity:"common",chance:3,price:350,income:22},
+{name:"パンダ脳",icon:"🐼",rarity:"common",chance:3,price:400,income:24},
+{name:"ペンギン脳",icon:"🐧",rarity:"common",chance:3,price:450,income:26},
+
+{name:"ピザ脳",icon:"🍕",rarity:"rare",chance:5,price:300,income:20},
+{name:"タコ脳",icon:"🐙",rarity:"rare",chance:4,price:600,income:35},
+{name:"ドーナツ脳",icon:"🍩",rarity:"rare",chance:3,price:1200,income:70},
+{name:"アヒル脳",icon:"🦆",rarity:"rare",chance:3,price:900,income:55},
+{name:"カメ脳",icon:"🐢",rarity:"rare",chance:2.7,price:1100,income:65},
+{name:"サカナ脳",icon:"🐟",rarity:"rare",chance:2.5,price:1300,income:75},
+{name:"カニ脳",icon:"🦀",rarity:"rare",chance:2.2,price:1500,income:85},
+{name:"ハチ脳",icon:"🐝",rarity:"rare",chance:2,price:1800,income:100},
+{name:"キツネ脳",icon:"🦊",rarity:"rare",chance:1.8,price:2200,income:120},
+{name:"カエル王脳",icon:"🐸",rarity:"rare",chance:1.5,price:2500,income:140},
+{name:"ライオン脳",icon:"🦁",rarity:"rare",chance:1.3,price:3000,income:160},
+{name:"オオカミ脳",icon:"🐺",rarity:"rare",chance:1.1,price:3500,income:190},
+{name:"ティラノ脳",icon:"🦖",rarity:"rare",chance:.9,price:4000,income:220},
+
+{name:"サメ脳",icon:"🦈",rarity:"epic",chance:.8,price:5000,income:280},
+{name:"宇宙脳",icon:"👽",rarity:"epic",chance:.6,price:10000,income:500},
+{name:"ユニコーン脳",icon:"🦄",rarity:"epic",chance:.45,price:15000,income:700},
+{name:"エイリアン脳",icon:"👾",rarity:"epic",chance:.35,price:20000,income:900},
+{name:"ダイヤ脳",icon:"💎",rarity:"epic",chance:.25,price:30000,income:1200},
+
+{name:"雷神脳",icon:"⚡",rarity:"brainrotgod",chance:.12,price:100000,income:5000},
+{name:"ブラックホール脳",icon:"🌌",rarity:"brainrotgod",chance:.08,price:200000,income:8000},
+{name:"太陽神脳",icon:"☀️",rarity:"brainrotgod",chance:.06,price:300000,income:12000},
+{name:"月神脳",icon:"🌑",rarity:"brainrotgod",chance:.05,price:400000,income:15000},
+{name:"火山神脳",icon:"🌋",rarity:"brainrotgod",chance:.04,price:500000,income:18000},
+{name:"海神脳",icon:"🌊",rarity:"brainrotgod",chance:.035,price:600000,income:22000},
+{name:"嵐神脳",icon:"🌪️",rarity:"brainrotgod",chance:.03,price:800000,income:28000},
+
+{name:"虹色脳",icon:"🌈",rarity:"secret",chance:.012,price:5000000,income:100000},
+{name:"ドラゴン脳",icon:"🐲",rarity:"secret",chance:.006,price:10000000,income:200000}
+];
+
+let money=500;
+let collection={};
+let luckyMultiplier=1;
+let audioContext=null;
+let musicTimer=null;
+let musicOn=false;
+
+function audio(){
+if(!audioContext)audioContext=new(window.AudioContext||window.webkitAudioContext)();
+if(audioContext.state==="suspended")audioContext.resume();
+}
+
+function tone(freq,duration,type="sine",volume=.08){
+if(!audioContext)return;
+const o=audioContext.createOscillator();
+const g=audioContext.createGain();
+o.type=type;
+o.frequency.value=freq;
+g.gain.setValueAtTime(volume,audioContext.currentTime);
+g.gain.exponentialRampToValueAtTime(.001,audioContext.currentTime+duration);
+o.connect(g);
+g.connect(audioContext.destination);
+o.start();
+o.stop(audioContext.currentTime+duration);
+}
+
+function purchaseSound(){
+audio();
+tone(660,.08);
+setTimeout(()=>tone(880,.12),70);
+}
+
+function godSound(){
+audio();
+tone(180,.25,"sawtooth",.15);
+setTimeout(()=>tone(280,.25,"square",.13),150);
+setTimeout(()=>tone(420,.35,"sine",.16),300);
+setTimeout(()=>tone(700,.5,"sine",.12),500);
+}
+
+function secretSound(){
+audio();
+tone(330,.15,"sine",.14);
+setTimeout(()=>tone(494,.15,"sine",.14),120);
+setTimeout(()=>tone(659,.15,"sine",.15),240);
+setTimeout(()=>tone(988,.25,"sine",.18),360);
+setTimeout(()=>tone(1318,.5,"sine",.15),520);
+}
+
+function musicLoop(){
+if(!musicOn)return;
+const notes=[261.63,329.63,392,523.25,392,329.63];
+let i=0;
+musicTimer=setInterval(()=>{
+if(musicOn)tone(notes[i++%notes.length],.18,"triangle",.035);
+},260);
+}
+
+function startGame(){
+audio();
+musicOn=true;
+document.getElementById("startMusic").style.display="none";
+document.getElementById("musicButton").textContent="🎵 BGM ON";
+musicLoop();
+}
+
+function toggleMusic(){
+audio();
+musicOn=!musicOn;
+if(musicTimer){
+clearInterval(musicTimer);
+musicTimer=null;
+}
+if(musicOn){
+musicLoop();
+document.getElementById("musicButton").textContent="🎵 BGM ON";
+}else{
+document.getElementById("musicButton").textContent="🔇 BGM OFF";
+}
+}
+
+function chooseBrain(){
+let total=0;
+
+for(const b of brains){
+let c=b.chance;
+if(luckyMultiplier>1 &&
+(b.rarity==="rare"||b.rarity==="epic"||
+b.rarity==="brainrotgod"||b.rarity==="secret"))c*=luckyMultiplier;
+total+=c;
+}
+
+let r=Math.random()*total;
+
+for(const b of brains){
+let c=b.chance;
+
+if(luckyMultiplier>1 &&
+(b.rarity==="rare"||b.rarity==="epic"||
+b.rarity==="brainrotgod"||b.rarity==="secret"))c*=luckyMultiplier;
+
+r-=c;
+if(r<=0)return b;
+}
+
+return brains[0];
+}
+
+function rareEffect(data){
+const e=document.getElementById("effect");
+
+if(data.rarity==="secret"){
+e.innerHTML="🔴✨<br>SECRET!!<br>"+data.icon+" "+data.name+" 出現！！✨";
+e.className="showSecret";
+secretSound();
+flash();
+}
+else if(data.rarity==="brainrotgod"){
+e.innerHTML="🟠⚡<br>BRAINROT GOD!!<br>"+data.icon+" "+data.name+" 出現！！";
+e.className="showGod";
+godSound();
+flash();
+}
+
+setTimeout(()=>{
+e.className="";
+e.innerHTML="";
+},1900);
+}
+
+function flash(){
+const f=document.getElementById("flash");
+f.classList.remove("flash");
+void f.offsetWidth;
+f.classList.add("flash");
+}
+
+function spawnBrain(forced=null){
+
+const data=forced||chooseBrain();
+
+const el=document.createElement("div");
+
+el.className="brain "+data.rarity;
+
+/* キャラ＋購入額を一つにまとめて表示 */
+el.innerHTML=
+'<span class="price">💰 '+data.price.toLocaleString()+'円</span>'+
+'<span>'+data.icon+'</span>';
+
+let x=-110;
+el.style.left=x+"px";
+
+document.getElementById("game").appendChild(el);
+
+if(data.rarity==="brainrotgod"||data.rarity==="secret")rareEffect(data);
+
+function move(){
+if(!el.isConnected)return;
+x+=2.2;
+el.style.left=x+"px";
+
+if(x>innerWidth+110){
+el.remove();
+return;
+}
+
+requestAnimationFrame(move);
+}
+
+function buy(){
+
+audio();
+
+if(!el.isConnected)return;
+
+if(money<data.price){
+showMessage("💸 "+data.name+" は "+data.price.toLocaleString()+"円 必要！");
+return;
+}
+
+money-=data.price;
+collection[data.name]=(collection[data.name]||0)+1;
+
+el.remove();
+
+purchaseSound();
+
+showMessage(data.icon+" "+data.name+" GET！");
+update();
+save();
+}
+
+el.addEventListener("touchstart",e=>{
+e.preventDefault();
+buy();
+},{passive:false});
+
+el.addEventListener("click",buy);
+
+requestAnimationFrame(move);
+}
+
+function showMessage(text){
+const m=document.getElementById("message");
+m.textContent=text;
+
+setTimeout(()=>{
+if(m.textContent===text)m.textContent="";
+},1300);
+}
+
+function updateCollection(){
+
+const cards=document.getElementById("cards");
+const names=Object.keys(collection);
+
+if(!names.length){
+cards.textContent="まだ持っていません";
+return;
+}
+
+cards.innerHTML="";
+
+names.forEach(name=>{
+
+const data=brains.find(b=>b.name===name);
+if(!data)return;
+
+const card=document.createElement("div");
+card.className="card";
+
+card.innerHTML=
+'<div class="icon">'+data.icon+"</div>"+
+"<div>"+data.name+"</div>"+
+"<div>×"+collection[name]+"</div>"+
+"<div>+"+data.income.toLocaleString()+"円/秒</div>";
+
+cards.appendChild(card);
+});
+}
+
+function update(){
+
+document.getElementById("moneyText").textContent=money.toLocaleString();
+updateCollection();
+
+const status=document.getElementById("luckyStatus");
+
+if(luckyMultiplier>1){
+status.textContent="🍀 レア率 ×"+luckyMultiplier;
+status.classList.add("active");
+}else{
+status.classList.remove("active");
+}
+}
+
+function save(){
+localStorage.setItem("brainRoadSave",JSON.stringify({
+money,
+collection,
+luckyMultiplier
+}));
+}
+
+function load(){
+
+const saved=localStorage.getItem("brainRoadSave");
+
+if(!saved)return;
+
+try{
+
+const d=JSON.parse(saved);
+
+if(Number.isFinite(d.money))money=d.money;
+if(d.collection)collection=d.collection;
+if(d.luckyMultiplier)luckyMultiplier=d.luckyMultiplier;
+
+}catch{}
+}
+
+function collectIncome(){
+
+let income=0;
+
+for(const name in collection){
+
+const data=brains.find(b=>b.name===name);
+
+if(data)income+=data.income*collection[name];
+}
+
+if(income>0){
+money+=income;
+update();
+save();
+}
+}
+
+load();
+update();
+
+spawnBrain();
+
+setInterval(()=>spawnBrain(),1000);
+setInterval(()=>collectIncome(),1000);
+</script>
+</body>
+</html>
