@@ -175,7 +175,7 @@ position:absolute;bottom:84px;left:50%;transform:translateX(-50%);white-space:no
   <div class="startBox">
     <h1>🧠 BRAIN ROAD</h1>
     <p>
-      レッドカーペットを歩くBrainrotを購入して、コレクションを増やそう！<br>
+      レッドカーペットを歩くBrainを購入して、コレクションを増やそう！<br>
       3体集めたら融合もできるよ！
     </p>
     <button id="startGameButton">🎵 ゲーム開始</button>
@@ -183,7 +183,46 @@ position:absolute;bottom:84px;left:50%;transform:translateX(-50%);white-space:no
 </div>
 
 </div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  onSnapshot,
+  collection,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
+const firebaseConfig = {
+  apiKey: "AIzaDkEvi4OWL5I0f6jgsYDYWWhYdDr0GMnhY",
+  authDomain: "brain-road.firebaseapp.com",
+  projectId: "brain-road",
+  storageBucket: "brain-road.firebasestorage.app",
+  messagingSenderId: "750635529324",
+  appId: "1:750635529324:web:6c9b1ec5f9094fb07a5449",
+  measurementId: "G-QVPY4QEYSH"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
+
+window.brainRoadFirebase = {
+  auth,
+  db,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  doc,
+  setDoc,
+  onSnapshot
+};
+</script>
 <script>
 /* ===== キャラクター42体 =====
    price = 購入価格
@@ -264,7 +303,104 @@ let musicTimer=null;
 let incomeTimer=null;
 let spawnTimer=null;
 let fusionSelected=[];
+/* ===== Firebase リアルタイム機能 ===== */
 
+let firebaseLiveStarted = false;
+let lastRealtimeEventId = null;
+
+function setupRealtime(){
+
+  const fb = window.brainRoadFirebase;
+
+  if(!fb) return;
+
+  const liveRef =
+    fb.doc(
+      fb.db,
+      "gameConfig",
+      "live"
+    );
+
+  fb.onSnapshot(
+    liveRef,
+    snapshot => {
+
+      if(!snapshot.exists())
+        return;
+
+      const data = snapshot.data();
+
+      /* レア率をリアルタイム反映 */
+
+      if(typeof data.luckyEnabled === "boolean")
+        luckyEnabled = data.luckyEnabled;
+
+      if(Number.isFinite(data.luckyMultiplier))
+        luckyMultiplier =
+          Math.max(
+            1,
+            Number(data.luckyMultiplier)
+          );
+
+      update();
+
+      /*
+       * 最初に読み込んだスポーン命令は実行しない。
+       * 後から届いた命令だけ実行する。
+       */
+
+      if(!firebaseLiveStarted){
+
+        lastRealtimeEventId =
+          data.eventId || null;
+
+        firebaseLiveStarted = true;
+
+        return;
+      }
+
+      /* 新しい全員向けスポーン */
+
+      if(
+        data.eventId &&
+        data.eventId !== lastRealtimeEventId &&
+        data.spawn
+      ){
+
+        lastRealtimeEventId =
+          data.eventId;
+
+        const brain =
+          brains.find(
+            b => b.name === data.spawn.name
+          );
+
+        if(brain)
+          spawnBrain(brain);
+      }
+
+      /* 全員向けメッセージ */
+
+      if(data.message){
+
+        showMessage(
+          "📢 " + data.message
+        );
+
+      }
+
+    },
+    error => {
+
+      console.error(
+        "Firebase realtime error:",
+        error
+      );
+
+    }
+  );
+
+}
 const $=id=>document.getElementById(id);
 
 function load(){
