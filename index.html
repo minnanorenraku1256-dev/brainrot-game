@@ -171,7 +171,7 @@ position:absolute;bottom:84px;left:50%;transform:translateX(-50%);white-space:no
   </div>
 </div>
 
-<div id="startMusic">
+<div id="startMusic" style="display:none">
   <div class="startBox">
     <h1>🧠 BRAIN ROAD</h1>
     <p>
@@ -183,46 +183,6 @@ position:absolute;bottom:84px;left:50%;transform:translateX(-50%);white-space:no
 </div>
 
 </div>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  onSnapshot,
-  collection,
-  addDoc
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaDkEvi4OWL5I0f6jgsYDYWWhYdDr0GMnhY",
-  authDomain: "brain-road.firebaseapp.com",
-  projectId: "brain-road",
-  storageBucket: "brain-road.firebasestorage.app",
-  messagingSenderId: "750635529324",
-  appId: "1:750635529324:web:6c9b1ec5f9094fb07a5449",
-  measurementId: "G-QVPY4QEYSH"
-};
-
-const firebaseApp = initializeApp(firebaseConfig);
-const auth = getAuth(firebaseApp);
-const db = getFirestore(firebaseApp);
-
-window.brainRoadFirebase = {
-  auth,
-  db,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  doc,
-  setDoc,
-  onSnapshot
-};
-</script>
 <script>
 /* ===== キャラクター42体 =====
    price = 購入価格
@@ -1631,6 +1591,16 @@ update();
 setupForceSpawn();
 
 updateAdminUI();
+
+/* ===== プレビュー用自動開始 =====
+   ChatGPT等のHTMLプレビューではユーザー操作イベントが
+   制限されることがあるため、開始画面を使わず自動開始する。
+*/
+setTimeout(()=>{
+  if(!gameStarted){
+    $("startGameButton").click();
+  }
+},100);
 
 </script>
 </body>
