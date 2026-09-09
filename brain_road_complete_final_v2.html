@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>🧠 BRAIN ROAD - 完成版</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;background:#10131c;color:#fff}
+button,input,select{font:inherit}button{cursor:pointer}
+#game{position:fixed;inset:0;overflow:hidden;background:#10131c}
+#sky{position:absolute;inset:0;background:linear-gradient(#17243d 0%,#354b67 55%,#151922 55%,#151922 100%)}
+#carpet{position:absolute;left:0;top:58%;width:100%;height:110px;background:linear-gradient(#720014,#d20b2f 20%,#b80024 50%,#d20b2f 80%,#720014);border-top:7px solid #f5c84c;border-bottom:7px solid #f5c84c;z-index:5}
+#ui{position:absolute;top:7px;left:0;width:100%;text-align:center;z-index:100;pointer-events:none}
+#title{font-size:25px;font-weight:900;text-shadow:0 3px 8px #000}
+#money{margin-top:4px;font-size:21px;font-weight:900}
+#income{font-size:13px;font-weight:800;color:#a7f3d0}
+#mult{font-size:12px;font-weight:900;color:#fde68a}
+#hint,#message{position:absolute;left:0;width:100%;text-align:center;z-index:100;pointer-events:none}
+#hint{top:98px;font-size:13px}#message{top:122px;font-size:18px;font-weight:900;text-shadow:0 2px 6px #000}
+#musicButton,#adminButton{position:absolute;top:10px;z-index:300;border:0;border-radius:12px;padding:9px 11px;background:#252a38;color:#fff;font-size:13px;font-weight:900}
+#musicButton{right:10px}#adminButton{left:10px}
+#status{position:absolute;top:52px;left:10px;z-index:150;display:flex;gap:5px;flex-wrap:wrap;max-width:80%}
+.badge{padding:6px 9px;border-radius:11px;background:#273042;font-size:11px;font-weight:900}
+.badge.on{background:#16803c}.badge.gold{background:#8a6500}.badge.dia{background:#075985}.badge.rain{background:#9d174d}
+.brain{position:absolute;top:calc(58% + 17px);left:-120px;width:120px;height:98px;display:flex;align-items:flex-end;justify-content:center;font-size:48px;z-index:30;user-select:none;filter:drop-shadow(0 5px 3px rgba(0,0,0,.6));cursor:pointer}
+.brain .label{position:absolute;bottom:62px;left:50%;transform:translateX(-50%);white-space:nowrap;text-align:center;font-size:11px;font-weight:900;text-shadow:0 1px 3px #000;pointer-events:none}.brain .name{display:block}.brain .rarity{display:block;font-size:10px}
+.brain .price{position:absolute;bottom:84px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:12px;font-weight:900;background:rgba(0,0,0,.82);padding:3px 7px;border-radius:8px;border:2px solid #f5c84c;pointer-events:none}
+.common{text-shadow:0 0 5px #fff}.rare{text-shadow:0 0 13px #4db8ff}.epic{text-shadow:0 0 16px #c45cff}.brainrotgod{text-shadow:0 0 20px gold,0 0 30px #ff4500}.secret{text-shadow:0 0 25px #fff,0 0 45px #ff00ff,0 0 65px gold}.og{text-shadow:0 0 14px gold,0 0 35px #ffd700}
+.mGold{filter:drop-shadow(0 0 10px gold)}.mDiamond{filter:drop-shadow(0 0 10px #67e8f9)}.mRainbow{filter:drop-shadow(0 0 12px #ff4dff)}
+#bottom{position:absolute;left:8px;right:8px;bottom:8px;height:28%;min-height:175px;max-height:300px;overflow-y:auto;padding:9px;border-radius:15px;background:rgba(0,0,0,.78);z-index:100;border:1px solid #394052}
+#bottom h3{margin:0 0 7px;font-size:16px}.tabs{display:flex;gap:5px;margin-bottom:7px}.tabs button{flex:1;padding:7px;border:0;border-radius:8px;background:#303747;color:#fff;font-weight:900}.tabs button.active{background:#7c3aed}
+#cards{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}.card{min-height:67px;padding:4px;border-radius:9px;background:#202534;text-align:center;font-size:10px;font-weight:800;border:1px solid #3b4254}.card .icon{font-size:24px;line-height:25px}.card .rarityText{font-size:9px}
+.bigBtn{width:100%;margin-top:8px;padding:11px;border:0;border-radius:11px;color:#fff;font-size:15px;font-weight:900}.purple{background:#7c3aed}.blue{background:#2563eb}.yellow{background:#a16207}.red{background:#b91c1c}.yellow{background:#a16207}
+#resetButton{display:block;margin:6px auto 0;padding:4px 9px;border:1px solid #555;border-radius:7px;background:#191d27;color:#aaa;font-size:10px}
+.panel{position:absolute;inset:0;z-index:900;background:rgba(6,9,16,.96);display:none;overflow-y:auto;padding:18px}.panelBox{width:min(94%,760px);margin:0 auto;padding:18px;border-radius:18px;background:#1c2333;border:1px solid #4a5368;box-shadow:0 15px 50px #000}.panelBox h2{margin:0 0 12px;text-align:center}.closeBtn{width:100%;margin-top:12px;padding:11px;border:0;border-radius:11px;background:#343b4e;color:#fff;font-weight:900}
+#fusionChoices{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.fusionChoice{padding:9px;border:2px solid #3f475a;border-radius:11px;background:#252c3d;color:#fff;text-align:left;font-weight:800}.fusionChoice.selected{border-color:#c45cff;background:#49206b}
+#selectedInfo{text-align:center;margin:9px 0;color:#ddd;font-weight:900}#doFusion{width:100%;padding:13px;border:0;border-radius:11px;background:#4b5563;color:#fff;font-weight:900}#doFusion.ready{background:#c45cff}#fusionResult{text-align:center;min-height:24px;margin-top:8px;font-weight:900}
+.adminRow{display:flex;gap:8px;align-items:center;margin:9px 0;flex-wrap:wrap}.adminRow label{font-weight:800;min-width:170px}.adminRow input,.adminRow select{flex:1;min-width:120px;padding:9px;border-radius:9px;border:1px solid #4b5563;background:#111827;color:#fff}.adminBtn{padding:9px 12px;border:0;border-radius:9px;background:#374151;color:#fff;font-weight:900}.adminBtn.active{background:#16a34a}.adminNote{font-size:12px;color:#b9c1d1;line-height:1.6}.section{margin:14px 0;padding:10px;border:1px solid #39445a;border-radius:12px}.sectionTitle{font-weight:900;margin-bottom:7px}#adminLog{margin-top:10px;min-height:25px;text-align:center;color:#86efac;font-weight:800}
+#bookGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.bookCard{padding:7px;border-radius:9px;background:#202534;border:1px solid #3b4254;text-align:center;font-size:10px;font-weight:800}.bookCard .big{font-size:27px;line-height:29px}.bookCard.missing{filter:grayscale(1);opacity:.55}
+#reverseInfo{padding:12px;border-radius:12px;background:#111827;text-align:center;line-height:1.7}.reverseCost{font-size:18px;font-weight:900;color:#fde68a}
+#loginPanel{display:none;position:absolute;inset:0;z-index:1000;background:rgba(0,0,0,.94);align-items:center;justify-content:center}.loginBox{width:min(92%,430px);background:#1c2333;border:1px solid #4a5368;border-radius:18px;padding:20px}.loginBox input{width:100%;padding:11px;margin:6px 0;border-radius:9px;border:1px solid #4b5563;background:#111827;color:#fff}.loginBox button{width:100%;padding:11px;border:0;border-radius:10px;background:#7c3aed;color:#fff;font-weight:900;margin-top:7px}
+#chatHistory{max-height:220px;overflow-y:auto;padding:8px;border-radius:10px;background:#111827}.chatLine{padding:5px 3px;border-bottom:1px solid #293244;font-size:12px}
+#effect{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:30px;font-weight:900;opacity:0;pointer-events:none;z-index:800000;text-shadow:0 0 10px #000,0 0 25px gold}.showGod{animation:god 1.3s}.showSecret{animation:secret 1.8s}.showOG{animation:og 2.3s}
+@keyframes god{0%{opacity:0;transform:scale(.3)}20%{opacity:1;transform:scale(1.25)}70%{opacity:1}100%{opacity:0;transform:scale(1.5)}}@keyframes secret{0%{opacity:0;transform:scale(.2)}15%{opacity:1;transform:scale(1.3)}45%{opacity:1}100%{opacity:0;transform:scale(1.7)}}@keyframes og{0%{opacity:0;transform:scale(.1) rotate(-10deg)}15%{opacity:1;transform:scale(1.3)}45%{opacity:1;transform:scale(1)}75%{opacity:1;transform:scale(1.15)}100%{opacity:0;transform:scale(1.8)}}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:700000}.flash{animation:flash .35s}@keyframes flash{0%{opacity:.8}100%{opacity:0}}
+@media(max-width:500px){#cards{grid-template-columns:repeat(4,1fr)}#bookGrid{grid-template-columns:repeat(3,1fr)}#title{font-size:22px}.brain{width:112px}.adminRow label{min-width:100%}}
+</style>
+</head>
+<body>
+<div id="game">
+<div id="sky"></div><div id="carpet"></div>
+<div id="ui"><div id="title">🧠 BRAIN ROAD</div><div id="money">💰 500円</div><div id="income">+0円/秒</div><div id="mult">稼ぎ倍率 ×1</div></div>
+<button id="adminButton">⚙️ 管理</button><button id="musicButton">🎵 BGM ON</button>
+<div id="status"></div><div id="hint">🟥 ブレインロットをタップして購入！</div><div id="message"></div><div id="effect"></div><div id="flash"></div>
+<div id="bottom"><h3>📦 コレクション</h3><div class="tabs"><button id="charTab" class="active">🧠 キャラ</button><button id="mutTab">🧬 変異</button></div><div id="cards"></div>
+<button id="fusionOpen" class="bigBtn purple">🧬 融合する！</button><button id="encyclopediaOpen" class="bigBtn blue">📖 図鑑</button><button id="probabilityOpen" class="bigBtn yellow">📊 確率表</button><button id="reverseOpen" class="bigBtn red">🔄 リバース</button><button id="resetButton">データをリセット</button></div>
+
+<div id="fusionPanel" class="panel"><div class="panelBox"><h2>🧬 3体を選んで融合</h2><div id="selectedInfo">0 / 3 選択中</div><div id="fusionChoices"></div><button id="doFusion">3体を選んでください</button><div id="fusionResult"></div><button class="closeBtn" id="closeFusion">戻る</button></div></div>
+
+<div id="bookPanel" class="panel"><div class="panelBox"><h2>📖 図鑑</h2><div class="tabs"><button id="bookCharTab" class="active">🧠 キャラ</button><button id="bookMutTab">🧬 変異4種</button></div><div id="bookGrid"></div><button class="closeBtn" id="closeBook">閉じる</button></div></div>
+
+
+<div id="probabilityPanel" class="panel"><div class="panelBox"><h2>📊 キャラクター確率・収入表</h2><div class="adminNote">OGの出現確率はこの表には表示しません。融合限定は「融合のみ」と表示します。</div><div id="probabilityTable" style="overflow:auto"></div><button class="closeBtn" id="closeProbability">閉じる</button></div></div>
+<div id="reversePanel" class="panel"><div class="panelBox"><h2>🔄 リバース</h2><div id="reverseInfo"></div><button id="doReverse" class="bigBtn red">リバースする</button><button class="closeBtn" id="closeReverse">戻る</button></div></div>
+
+<div id="adminPanel" class="panel"><div class="panelBox"><h2>⚙️ 管理者パネル</h2>
+<div class="adminNote">管理者アカウントでログインした人だけ操作できます。リアルタイムONなら、対応設定はFirebaseを通じて全員へ反映します。</div>
+<div class="section"><div class="sectionTitle">🌐 リアルタイム</div><div class="adminRow"><label>全体リアルタイム</label><button class="adminBtn" id="realtimeToggle">OFF</button></div></div>
+<div class="section"><div class="sectionTitle">🍀 レアラック</div><div class="adminRow"><label>レアラック</label><button class="adminBtn" id="rareToggle">OFF</button></div><div class="adminRow"><label>倍率</label><select id="rareMultiplier"><option>×2</option><option>×10</option><option>×20</option><option>×50</option><option>×67</option><option>×100</option></select></div></div>
+<div class="section"><div class="sectionTitle">🧬 融合ラック</div><div class="adminRow"><label>融合ラック</label><button class="adminBtn" id="fusionLuckToggle">OFF</button></div></div>
+<div class="section"><div class="sectionTitle">✨ 変異確率アップ（同時ON可能）</div>
+<div class="adminRow"><label>🟡 ゴールド確率アップ</label><button class="adminBtn" id="goldBoost">OFF</button><select id="goldBoostMult"><option value="2">×2</option><option value="5" selected>×5</option><option value="10">×10</option><option value="20">×20</option></select></div>
+<div class="adminRow"><label>💎 ダイヤモンド確率アップ</label><button class="adminBtn" id="diamondBoost">OFF</button><select id="diamondBoostMult"><option value="2">×2</option><option value="5" selected>×5</option><option value="10">×10</option><option value="20">×20</option></select></div>
+<div class="adminRow"><label>🌈 レインボー確率アップ</label><button class="adminBtn" id="rainbowBoost">OFF</button><select id="rainbowBoostMult"><option value="2">×2</option><option value="5" selected>×5</option><option value="10">×10</option><option value="20">×20</option></select></div>
+</div>
+<div class="section"><div class="sectionTitle">👾 キャラクター操作</div><div class="adminRow"><label>キャラクター</label><select id="forceSpawnSelect"></select></div><div class="adminRow"><label>変異指定</label><select id="forceMutation"><option value="normal">⚪ 通常</option><option value="gold">🟡 ゴールド</option><option value="diamond">💎 ダイヤモンド</option><option value="rainbow">🌈 レインボー</option></select></div><div class="adminRow"><label>自分だけ出現</label><button class="adminBtn" id="forceSpawn">出現</button></div><div class="adminRow"><label>🌐 全員に出現</label><button class="adminBtn" id="forceGlobalSpawn">出現</button></div><div class="adminRow"><label>👑 OGを出す</label><select id="ogSelect"><option value="og_pachislo">🎰 パチスロ</option><option value="og_myaoru">🦉 ミャオル</option></select><button class="adminBtn" id="spawnOG">自分</button><button class="adminBtn" id="spawnGlobalOG">🌐 全員</button></div></div>
+<div class="section"><div class="sectionTitle">💰 管理者の所持金</div><div class="adminRow"><input id="moneyAdd" type="number" min="0" step="100" placeholder="追加金額"><button class="adminBtn" id="addMoney">追加</button></div></div>
+<div class="section"><div class="sectionTitle">📢 管理者リアルタイムチャット</div><div class="adminRow"><input id="broadcastMessage" maxlength="120" placeholder="全員に送るメッセージ"><button class="adminBtn" id="sendBroadcast">送信</button></div><div id="chatHistory"></div></div>
+<div id="adminLog"></div><button class="closeBtn" id="closeAdmin">閉じる</button></div></div>
+
+<div id="loginPanel"><div class="loginBox"><h2>👑 管理者ログイン</h2><p style="font-size:12px;color:#cbd5e1">Firebase Authenticationのメール/パスワードでログインしてください。</p><input id="loginEmail" type="email" placeholder="メールアドレス"><input id="loginPassword" type="password" placeholder="パスワード"><button id="loginButton">ログイン</button><button id="cancelLogin" style="background:#343b4e">戻る</button><div id="loginError" style="color:#fca5a5;font-size:12px;margin-top:8px"></div></div></div>
+</div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+import {getFirestore,doc,setDoc,onSnapshot,collection,addDoc,query,orderBy,limit,getDocs} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaDkEvi4OWL5I0f6jgsYDYWWhYdDr0GMnhY",authDomain:"brain-road.firebaseapp.com",projectId:"brain-road",storageBucket:"brain-road.firebasestorage.app",messagingSenderId:"750635529324",appId:"1:750635529324:web:6c9b1ec5f9094fb07a5449",measurementId:"G-QVPY4QEYSH"};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+window.BRFB={auth,db,signInWithEmailAndPassword,onAuthStateChanged,signOut,doc,setDoc,onSnapshot,collection,addDoc,query,orderBy,limit,getDocs};
+</script>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+import {getFirestore,doc,setDoc,onSnapshot,collection,addDoc,query,orderBy,limit,getDocs} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaDkEvi4OWL5I0f6jgsYDYWWhYdDr0GMnhY",authDomain:"brain-road.firebaseapp.com",projectId:"brain-road",storageBucket:"brain-road.firebasestorage.app",messagingSenderId:"750635529324",appId:"1:750635529324:web:6c9b1ec5f9094fb07a5449",measurementId:"G-QVPY4QEYSH"};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+window.BRFB={auth,db,signInWithEmailAndPassword,onAuthStateChanged,signOut,doc,setDoc,onSnapshot,collection,addDoc,query,orderBy,limit,getDocs};
+</script>
+<script>
+const groups=[
+["common","🟢 通常",[
+["にんじん脳","🥕",1,1,12],["ハンバーガー脳","🍔",3,3,10],["バナナ脳","🍌",5,5,9],["スイカ脳","🍉",10,8,8],["りんご脳","🍎",13,9,7],["ポップコーン脳","🍿",20,12,6],["ラーメン脳","🍜",25,14,5.5],["おにぎり脳","🍙",30,16,5],["ネコ脳","🐱",33,18,4.8],["イヌ脳","🐶",38,20,4.5],["ニワトリ脳","🐔",40,22,4.2],["ブタ脳","🐷",44,24,4],["サル脳","🐵",48,26,3.8],["パンダ脳","🐼",50,28,3.5],["ペンギン脳","🐧",55,30,3.2],["いちご脳","🍓",60,33,3],["ピザ脳","🍕",65,36,2.8],["ドーナツ脳","🍩",70,39,2.6],["タコ焼き脳","🐙",75,42,2.4],["アイス脳","🍦",80,45,2.2],
+["いちご脳","🍓",88,48,2.05],["ぶどう脳","🍇",92,51,1.9],["もも脳","🍑",96,54,1.78],["さくらんぼ脳","🍒",100,57,1.67],["レモン脳","🍋",105,60,1.56],["ココナッツ脳","🥥",110,63,1.46],["アボカド脳","🥑",115,66,1.37],["コーン脳","🌽",120,69,1.29],["ポテト脳","🥔",125,72,1.21],["ピザ脳","🍕",130,75,1.14],["ドーナツ脳","🍩",135,78,1.08],["クッキー脳","🍪",140,81,1.02],["カップケーキ脳","🧁",145,84,.96],["アイス脳","🍦",150,87,.90],["ハムスター脳","🐹",155,90,.85],["ウサギ脳","🐰",160,93,.80],["カエル脳","🐸",165,96,.75],["ハリネズミ脳","🦔",170,99,.70],["コアラ脳","🐨",175,102,.66],["リス脳","🐿️",180,105,.62]
+]],
+["rare","🔵 レア",[
+["アヒル脳","🦆",100,45,2.5],["カメ脳","🐢",120,55,2.2],["サカナ脳","🐟",150,70,1.9],["カニ脳","🦀",200,85,1.6],["ハチ脳","🐝",230,100,1.4],["キツネ脳","🦊",260,120,1.2],["カエル王脳","🐸",270,140,1.1],["ライオン脳","🦁",300,160,.95],["オオカミ脳","🐺",330,190,.8],["ティラノ脳","🦖",400,220,.65],["ワシ脳","🦅",430,240,.58],["サメ脳","🦈",460,260,.52],["ゴリラ脳","🦍",500,280,.46],["ドラゴンフルーツ脳","🐉",550,300,.4],["ロボット脳","🤖",600,330,.34],
+["イーグル脳","🦅",620,345,.32],["タイガー脳","🐯",640,360,.30],["クマ脳","🐻",660,375,.28],["サメ脳","🦈",680,390,.26],["タコ脳","🐙",700,405,.24],["イカ脳","🦑",720,420,.22],["オウム脳","🦜",740,435,.20],["クジャク脳","🦚",760,450,.18],["ゴリラ脳","🦍",780,465,.16],["ゾウ脳","🐘",800,480,.14],["サイ脳","🦏",820,495,.125],["カバ脳","🦛",840,510,.11],["クロコダイル脳","🐊",860,525,.095],["サソリ脳","🦂",880,540,.08],["東洋龍脳","🐉",900,555,.068]
+]],
+["epic","🟣 激レア",[
+["ユニコーン脳","🦄",700,400,.35],["エイリアン脳","👾",850,500,.30],["ダイヤ脳","💎",1000,650,.25],["フェニックス脳","🔥",1200,800,.20],["魔法使い脳","🧙",1400,950,.17],["宇宙船脳","🚀",1600,1100,.14],["キングコブラ脳","🐍",1800,1250,.12],["巨大イカ脳","🦑",2000,1400,.10],["雷獣脳","⚡",2300,1600,.085],["氷龍脳","🐲",2600,1800,.07],
+["フェニックス脳","🔥",2800,1900,.065],["氷河脳","❄️",3000,2000,.06],["嵐脳","🌪️",3200,2100,.055],["マグマ脳","🌋",3400,2200,.05],["月光脳","🌙",3600,2300,.045],["隕石脳","☄️",3800,2400,.04],["惑星脳","🪐",4000,2500,.035],["幽霊王脳","👻",4200,2600,.031],["魔法王脳","🧙",4400,2700,.027],["スター・ユニコーン脳","🦄🌟",4600,2800,.023]
+]],
+["brainrotgod","🟠 BrainrotGod",[
+["雷神脳","⚡",3000,2000,.12],["ブラックホール脳","🌌",4000,2700,.09],["太陽神脳","☀️",5000,3400,.07],["月影神脳","🌑",6000,4100,.055],["火山神脳","🌋",7000,4800,.045],["海神脳","🌊",8000,5500,.038],["時空神脳","🌀",9000,6300,.032],["銀河神脳","🌠",10000,7200,.026],["星王脳","🌟",12000,8500,.020],["虚空神脳","🕳️",15000,10000,.015],
+["炎帝脳","🔥",16000,10800,.0135],["氷帝脳","❄️",17000,11600,.012],["嵐帝脳","🌪️",18000,12400,.0105],["深海神脳","🌊",19000,13200,.009],["銀河神脳","🌌",20000,14000,.0078],["星界神脳","🌠",21000,14800,.0068],["虚無神脳","🕳️",22000,15600,.0059],["時間神脳","⏳",23000,16400,.0051],["戦神脳","⚔️",24000,17200,.0044],["宇宙創造神脳","🪐",25000,18000,.0038]
+]],
+["secret","🔴 Secret",[
+["レインボー脳","🌈",18000,13000,.012],["ドラゴン脳","🐲",25000,18000,.006],["フェニックス王脳","🔥",30000,22000,.004],["時空龍脳","🐉",40000,30000,.003],["無限脳","♾️",50000,38000,.002],["銀河竜脳","🐲",65000,50000,.0015],["神話脳","👁️",80000,62000,.001],["カオス脳","🌀",100000,80000,.0008],["創世脳","🌌",130000,100000,.0005],["究極脳","👑",180000,140000,.00025],
+["全知脳","👁️",20000,6500,.00022],["ブラッドムーン脳","🩸",23000,7600,.00020],["異次元脳","🕳️",27000,8800,.00018],["無限回廊脳","🌀",32000,10000,.00016],["究極王脳","👑",38000,11200,.00014],["終焉宇宙脳","🌌",45000,12400,.00012],["クリスタル・コア脳","💠",55000,13800,.00010],["天使王脳","🪽",70000,15200,.00008],["魔王脳","😈",90000,16500,.00006],["オメガ脳","♾️",120000,17500,.00004]
+]],
+["fusioncommon","🧬 融合限定",[["トイレットペーパー脳","🧻",35,18,0],["融合スライム脳","🟢",45,24,0]]],
+["fusionrare","🧬 融合限定レア",[["人脳","👦",180,80,0],["ミラクル脳","🔵",260,120,0]]],
+["fusionepic","🧬 融合限定激レア",[["サングラス脳","🕶️",220,110,0],["カオス脳","🟣",900,450,0]]],
+["fusiongod","🧬 融合限定God",[["クロノ・キング脳","👑",5500,3000,0],["アルティメット神脳","🟠",12000,8000,0]]],
+["fusionsecret","🧬 融合限定Secret",[["アブソリュート脳","♾️",15000,10000,0],["∞ アブソリュート・ゼロ脳","♾️",30000,17000,0]]]
+];
+const brains=[];for(const [rarity,label,arr] of groups)for(let i=0;i<arr.length;i++){const x=arr[i];brains.push({id:rarity+"_"+i+"_"+x[0],name:x[0],icon:x[1],price:x[2],income:x[3],chance:x[4],rarity,label})}
+const ogs=[
+{id:"og_pachislo",name:"パチスロ",icon:"🎰",rarity:"og",label:"🟡 OG",price:777777,income:100000,chance:0.0000001},
+{id:"og_myaoru",name:"ミャオル",icon:"🦉",rarity:"og",label:"🟡 OG",price:700000,income:75000,chance:0.0000001}
+];
+const allChars=[...brains,...ogs];
+const mutations={normal:{name:"通常",icon:"⚪",mult:1},gold:{name:"ゴールド",icon:"🟡",mult:2},diamond:{name:"ダイヤモンド",icon:"💎",mult:3},rainbow:{name:"レインボー",icon:"🌈",mult:5}};
+const mutationBase={normal:1,gold:.20,diamond:.06,rainbow:.02};
+const rarityRank={common:0,rare:1,epic:2,brainrotgod:3,secret:4,og:5,fusioncommon:0,fusionrare:1,fusionepic:2,fusiongod:3,fusionsecret:4};
+const reverseCosts=[500000,2500000,15000000,120000000,2030000000,24060000000,102000000000,510000000000,1500000000000,3000000000000];
+const ADMIN_EMAIL="minnanorenraku1256@gmail.com";
+let money=500,reverseCount=0,mutCollection={},discovered={},luckyEnabled=false,luckyMultiplier=2,fusionLuck=false;
+let boost={gold:false,diamond:false,rainbow:false,goldMult:5,diamondMult:5,rainbowMult:5};
+let realtime=false,gameStarted=true,musicOn=false,audioContext=null,musicTimer=null,incomeTimer=null,spawnTimer=null,fusionSelected=[];
+let firebaseLiveStarted=false,lastSettingsEvent=null,lastSpawnEvent=null,lastMessageEvent=null,adminUser=null;
+const $=id=>document.getElementById(id),key=(id,m)=>id+"@@"+m;
+function findById(id){return allChars.find(x=>x.id===id)}
+function legacyFindByName(name){return allChars.find(x=>x.name===name)}
+function load(){try{const s=JSON.parse(localStorage.getItem("brainRoadFinalSave")||localStorage.getItem("brainRoadIntegratedSave")||"null");if(!s)return;if(Number.isFinite(s.money))money=s.money;if(Number.isFinite(s.reverseCount))reverseCount=Math.max(0,Math.min(10,s.reverseCount));if(s.mutCollection)mutCollection=s.mutCollection;if(s.discovered)discovered=s.discovered;if(typeof s.luckyEnabled==="boolean")luckyEnabled=s.luckyEnabled;if(Number.isFinite(s.luckyMultiplier)&&[2,10,20,50,67,100].includes(Number(s.luckyMultiplier)))luckyMultiplier=Number(s.luckyMultiplier);if(typeof s.fusionLuck==="boolean")fusionLuck=s.fusionLuck;if(s.boost)boost={...boost,...s.boost};if(s.realtime===true)realtime=true; // migrate old name-based keys
+ const migrated={};for(const [k,v] of Object.entries(mutCollection)){if(!v)continue;const p=k.split("@@");if(p.length!==2)continue;const id=findById(p[0])?p[0]:(legacyFindByName(p[0])?.id);if(id)migrated[key(id,p[1])]=(migrated[key(id,p[1])]||0)+v}if(Object.keys(migrated).length)mutCollection=migrated;
+ const md={};for(const [k,v] of Object.entries(discovered||{})){const p=k.split("@@");const id=findById(p[0])?p[0]:(legacyFindByName(p[0])?.id);if(id)md[key(id,p[1]||"found")]=true}discovered={...discovered,...md};
+}catch(e){console.error(e)}}
+function save(){localStorage.setItem("brainRoadFinalSave",JSON.stringify({money,reverseCount,mutCollection,discovered,luckyEnabled,luckyMultiplier,fusionLuck,boost,realtime}))}
+function count(id,m){return mutCollection[key(id,m)]||0}
+function selectedCount(id){return fusionSelected.filter(x=>x===id).length}
+function add(b,m,n=1){const k=key(b.id,m);mutCollection[k]=(mutCollection[k]||0)+n;discovered[b.id]=true;discovered[key(b.id,m)]=true}
+function completedMainBook(){return brains.every(b=>discovered[b.id]===true)}
+function completedMutationBooks(){let n=0;for(const m of Object.keys(mutations))if(brains.every(b=>count(b.id,m)>0))n++;return n}
+function effectiveMultiplier(){return reverseCount+1+completedMutationBooks()}
+function totalIncome(){let t=0;for(const [k,n] of Object.entries(mutCollection)){const [id,m]=k.split("@@"),b=findById(id);if(b&&mutations[m])t+=b.income*mutations[m].mult*n}return t*effectiveMultiplier()}
+function update(){ $("money").textContent="💰 "+Math.floor(money).toLocaleString()+"円";$("income").textContent="+"+Math.floor(totalIncome()).toLocaleString()+"円/秒";$("mult").textContent="稼ぎ倍率 ×"+effectiveMultiplier();renderCollection();renderStatus();}
+function renderStatus(){const s=$("status");s.innerHTML="";if(luckyEnabled){const d=document.createElement("span");d.className="badge on";d.textContent="🍀 レアラック ×"+luckyMultiplier;s.appendChild(d)}for(const [k,label,cls] of [["gold","🟡 ゴールド率UP ×"+boost.goldMult,"gold"],["diamond","💎 ダイヤ率UP ×"+boost.diamondMult,"dia"],["rainbow","🌈 レインボー率UP ×"+boost.rainbowMult,"rain"]])if(boost[k]){const d=document.createElement("span");d.className="badge "+cls;d.textContent=label;s.appendChild(d)}if(fusionLuck){const d=document.createElement("span");d.className="badge on";d.textContent="🧬 融合ラックON";s.appendChild(d)}if(completedMainBook()){const d=document.createElement("span");d.className="badge on";d.textContent="📖 図鑑コンプリート";s.appendChild(d)}}
+function renderCollection(){const mut=$("mutTab").classList.contains("active"),box=$("cards");box.innerHTML="";for(const b of allChars){if(!mut){let n=Object.keys(mutations).reduce((v,m)=>v+count(b.id,m),0);if(!n)continue;box.innerHTML+=`<div class="card"><div class="icon">${b.icon}</div><div>${b.name}</div><div>${b.label}</div><div>×${n}</div></div>`}else for(const m of Object.keys(mutations)){const n=count(b.id,m);if(!n)continue;box.innerHTML+=`<div class="card"><div class="icon">${mutations[m].icon}</div><div>${b.name}</div><div>${mutations[m].name}</div><div>×${n} / 収入×${mutations[m].mult}</div></div>`}}if(!box.children.length)box.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:12px;color:#aaa">まだ持っていません</div>'}
+function renderBook(){const mut=$("bookMutTab").classList.contains("active"),g=$("bookGrid");g.innerHTML="";if(!mut){let foundCount=0;for(const b of brains){const found=discovered[b.id]===true||Object.keys(mutations).some(m=>count(b.id,m)>0);if(found)foundCount++;g.innerHTML+=`<div class="bookCard ${found?"":"missing"}"><div class="big">${found?b.icon:"❓"}</div><div>${found?b.name:"？？？"}</div><div>${found?b.label:"未発見"}</div></div>`}for(const b of ogs){const found=discovered[b.id]===true||Object.keys(mutations).some(m=>count(b.id,m)>0);g.innerHTML+=`<div class="bookCard ${found?"":"missing"}"><div class="big">${found?b.icon:"❓"}</div><div>${found?b.name:"？？？"}</div><div>${found?"👑 OG":"未発見 / コンプリート対象外"}</div></div>`}const note=document.createElement("div");note.style.cssText="grid-column:1/-1;text-align:center;padding:8px;font-weight:900;color:#fde68a";note.textContent=`OG以外 ${foundCount}/${brains.length}体 ${completedMainBook()?"🎉 コンプリート！ +1倍率":""}`;g.prepend(note)}else for(const [m,v] of Object.entries(mutations)){const done=brains.every(b=>count(b.id,m)>0);g.innerHTML+=`<div class="bookCard ${done?"":"missing"}"><div class="big">${v.icon}</div><div>${v.name}図鑑</div><div>${done?"コンプリート！ +1倍率":"進行中"}</div></div>`}}
+function renderProbability(){const box=$("probabilityTable");let html='<table style="width:100%;border-collapse:collapse;font-size:11px"><thead><tr><th style="padding:6px;border-bottom:1px solid #475569">画像</th><th style="padding:6px;border-bottom:1px solid #475569">名前</th><th style="padding:6px;border-bottom:1px solid #475569">レアリティ</th><th style="padding:6px;border-bottom:1px solid #475569">確率</th><th style="padding:6px;border-bottom:1px solid #475569">収入/秒</th></tr></thead><tbody>';for(const b of brains){html+=`<tr><td style="padding:5px;text-align:center">${b.icon}</td><td style="padding:5px">${b.name}</td><td style="padding:5px">${b.label}</td><td style="padding:5px;text-align:right">${b.chance>0?b.chance+"%":"融合のみ"}</td><td style="padding:5px;text-align:right">${b.income.toLocaleString()}円</td></tr>`}html+='</tbody></table>';box.innerHTML=html}
+function showMessage(t){$("message").textContent=t;setTimeout(()=>{if($("message").textContent===t)$("message").textContent=""},1700)}
+function audio(){try{if(!audioContext)audioContext=new(window.AudioContext||window.webkitAudioContext)();if(audioContext.state==="suspended")audioContext.resume()}catch(e){}}
+function tone(f,d=.1,type="sine",v=.06){if(!audioContext)return;const o=audioContext.createOscillator(),g=audioContext.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,audioContext.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioContext.currentTime+d);o.connect(g);g.connect(audioContext.destination);o.start();o.stop(audioContext.currentTime+d)}
+function musicStart(){if(!musicOn)return;let a=[262,330,392,523,392,330],i=0;musicTimer=setInterval(()=>tone(a[i++%a.length],.18,"triangle",.03),260)}
+function toggleMusic(){audio();musicOn=!musicOn;if(musicTimer)clearInterval(musicTimer);if(musicOn)musicStart();$("musicButton").textContent=musicOn?"🎵 BGM ON":"🔇 BGM OFF"}
+function rareEffect(b){const e=$("effect");if(b.rarity==="og"){e.innerHTML="🟡✨<br>OG!!<br>"+b.icon+" "+b.name+" 出現！！<br>"+Array(20).fill(b.icon).join(" ");e.className="showOG";tone(120,.25,"sawtooth",.22);setTimeout(()=>tone(320,.3,"square",.2),180);setTimeout(()=>tone(880,.5,"triangle",.18),430)}else if(b.rarity==="secret"||b.rarity==="fusionsecret"){e.innerHTML="🔴✨<br>SECRET!!<br>"+b.icon+" "+b.name+" 出現！！✨";e.className="showSecret";tone(330,.15);setTimeout(()=>tone(659,.15),180);setTimeout(()=>tone(988,.25),360)}else if(b.rarity==="brainrotgod"||b.rarity==="fusiongod"){e.innerHTML="🟠⚡<br>BRAINROT GOD!!<br>"+b.icon+" "+b.name+" 出現！！";e.className="showGod";tone(180,.25,"sawtooth",.15);setTimeout(()=>tone(420,.35),250)}$("flash").classList.remove("flash");void $("flash").offsetWidth;$("flash").classList.add("flash");setTimeout(()=>{e.className="";e.innerHTML=""},2400)}
+function mutationWeight(m){let w=mutationBase[m];if(m==="gold"&&boost.gold)w*=boost.goldMult;if(m==="diamond"&&boost.diamond)w*=boost.diamondMult;if(m==="rainbow"&&boost.rainbow)w*=boost.rainbowMult;return w}
+function chooseMutation(){let total=Object.keys(mutations).reduce((s,m)=>s+mutationWeight(m),0),r=Math.random()*total;for(const m of Object.keys(mutations)){r-=mutationWeight(m);if(r<=0)return m}return"normal"}
+function chooseBrain(){const ogPer=1e-9;if(Math.random()<ogPer*ogs.length)return ogs[Math.floor(Math.random()*ogs.length)];const pool=brains.filter(b=>b.chance>0);let total=0;for(const b of pool){let w=b.chance;if(luckyEnabled&&rarityRank[b.rarity]>=1)w*=luckyMultiplier;total+=w}let r=Math.random()*total;for(const b of pool){let w=b.chance;if(luckyEnabled&&rarityRank[b.rarity]>=1)w*=luckyMultiplier;r-=w;if(r<=0)return b}return brains[0]}
+function spawnBrain(forced=null,forcedMut=null){if(!gameStarted)return;const b=forced||chooseBrain(),m=forcedMut||chooseMutation(),el=document.createElement("div");el.className="brain "+b.rarity+" "+m;el.innerHTML=`<span class="price">💰 ${b.price.toLocaleString()}円</span><span class="label"><span class="name">${mutations[m].icon} ${b.name}</span><span class="rarity">${b.label} / ${mutations[m].name}</span></span><span>${b.icon}</span>`;let x=-120;el.style.left=x+"px";$("game").appendChild(el);if(["secret","brainrotgod","og"].includes(b.rarity))rareEffect(b);let dead=false;function move(){if(!el.isConnected||dead)return;x+=2.2;el.style.left=x+"px";if(x>innerWidth+120){dead=true;el.remove();return}requestAnimationFrame(move)}function buy(){audio();if(dead||!el.isConnected)return;if(money<b.price){showMessage("💸 "+b.name+" は "+b.price.toLocaleString()+"円 必要！");return}money-=b.price;add(b,m);dead=true;el.remove();tone(660,.08);setTimeout(()=>tone(880,.12),70);showMessage(`${mutations[m].icon} ${b.name} GET！`);update();save()}el.onclick=buy;el.ontouchstart=e=>{e.preventDefault();buy()};requestAnimationFrame(move)}
+function openFusion(){fusionSelected=[];$("fusionPanel").style.display="block";$("fusionResult").textContent="";renderFusionChoices()}
+function renderFusionChoices(){const box=$("fusionChoices");box.innerHTML="";for(const b of brains){const n=Object.keys(mutations).reduce((s,m)=>s+count(b.id,m),0);if(!n)continue;const used=selectedCount(b.id),can=used<n;const btn=document.createElement("button");btn.className="fusionChoice"+(used?" selected":"");btn.innerHTML=`${b.icon} ${b.name}<br><small>${b.label} / 所持×${n} / 選択×${used}</small>`;btn.disabled=!can&&used===0;btn.onclick=()=>{if(fusionSelected.length>=3){showMessage("🧬 3体まで！");return}if(selectedCount(b.id)>=n){showMessage("このキャラは所持数以上選べません");return}fusionSelected.push(b.id);renderFusionChoices()};box.appendChild(btn)}$("selectedInfo").textContent=fusionSelected.length+" / 3 選択中";$("doFusion").classList.toggle("ready",fusionSelected.length===3);$("doFusion").textContent=fusionSelected.length===3?"🧬 融合する！":"3体を選んでください"}
+function highestMutation(id){let best="normal";for(const m of Object.keys(mutations))if(count(id,m)>0&&mutations[m].mult>mutations[best].mult)best=m;return best}
+function chooseFusionMutation(selected){let w={normal:1,gold:1,diamond:1,rainbow:1};for(const [id,m] of selected)w[m]+=2;if(fusionLuck){w.gold*=3;w.diamond*=3;w.rainbow*=3}let total=Object.values(w).reduce((a,b)=>a+b,0),r=Math.random()*total;for(const m of Object.keys(w)){r-=w[m];if(r<=0)return m}return"normal"}
+function doFusion(){if(fusionSelected.length!==3){showMessage("🧬 必ず3体選んでください");return}if(fusionSelected.some(id=>findById(id)?.rarity==="og")){showMessage("❌ OGは融合素材にできません");return}if(!confirm("この3体を消費して融合します。よろしいですか？"))return;const selected=fusionSelected.map(id=>[id,highestMutation(id)]);if(selected.some(([id,m])=>count(id,m)<=0)){showMessage("❌ 所持数が不足しています");renderFusionChoices();return}let power=0;for(const [id,m] of selected){const b=findById(id);power+=b.income*mutations[m].mult}for(const [id,m] of selected){const k=key(id,m);mutCollection[k]--;if(mutCollection[k]<=0)delete mutCollection[k]}
+ let candidates=[...brains.filter(b=>b.rarity==="fusioncommon")];const tierBoost=fusionLuck?1.8:1;const weighted=[];for(const b of candidates)weighted.push([b,1]);if(power>=300/tierBoost)for(const b of brains.filter(b=>b.rarity==="fusionrare"))weighted.push([b,1]);if(power>=700/tierBoost)for(const b of brains.filter(b=>b.rarity==="fusionepic"))weighted.push([b,1]);if(power>=5000/tierBoost)for(const b of brains.filter(b=>b.rarity==="fusiongod"))weighted.push([b,1]);if(power>=10000/tierBoost)for(const b of brains.filter(b=>b.rarity==="fusionsecret"))weighted.push([b,1]);
+ let result=weighted[Math.floor(Math.random()*weighted.length)][0];const allSecret=selected.every(([id])=>findById(id)?.rarity==="secret");let ogHit=false;if(allSecret&&Math.random()<0.0000005){result=ogs[Math.floor(Math.random()*ogs.length)];ogHit=true}const m=chooseFusionMutation(selected);add(result,m);fusionSelected=[];save();update();renderFusionChoices();$("fusionResult").innerHTML=`🧬 融合パワー <strong>${power.toLocaleString()}円/秒</strong><br>${ogHit?"👑✨ 隠しOG!! ":""}✨ ${mutations[m].icon} ${result.icon} ${result.name} / ${mutations[m].name}`;showMessage(ogHit?"👑✨ 隠しOGを発見！":"🧬 融合成功！ "+result.name+" GET！");if(["og","secret","brainrotgod","fusionsecret","fusiongod"].includes(result.rarity))rareEffect(result)}
+function reverseInfo(){if(reverseCount>=10){$("reverseInfo").innerHTML="🎉 リバース最大10回達成！<br>倍率は最大 ×"+effectiveMultiplier()+" です。";$("doReverse").disabled=true;return}$("doReverse").disabled=false;const c=reverseCosts[reverseCount];$("reverseInfo").innerHTML=`現在：<strong>${reverseCount}/10回</strong><br>現在倍率：<strong>×${effectiveMultiplier()}</strong><br>次のリバース費用：<div class="reverseCost">${c.toLocaleString()}円</div><br>リバースすると所持金・所持キャラ・変異キャラが消えます。図鑑の発見記録は残ります。<br>リバース後倍率：<strong>×${reverseCount+2+completedMutationBooks()}</strong>`}
+function doReverse(){if(reverseCount>=10)return;const c=reverseCosts[reverseCount];if(money<c){showMessage("💸 リバースには "+c.toLocaleString()+"円必要！");return}if(!confirm("所持金・所持キャラ・変異キャラをすべて消します。図鑑は残ります。リバースしますか？"))return;money=500;mutCollection={};reverseCount++;save();update();reverseInfo();showMessage("🔄 リバース成功！ 現在 "+reverseCount+"/10回")}
+function writeLive(payload){const fb=window.BRFB;if(!fb||!adminUser)return;return fb.setDoc(fb.doc(fb.db,"gameConfig","live"),{...payload,eventId:String(Date.now())+Math.random().toString(16).slice(2),updatedAt:Date.now()},{merge:true}).catch(e=>{console.error(e);logAdmin("❌ Firebase送信失敗")})}
+function pushLive(payload){if(!realtime)return;return writeLive(payload)}
+function logAdmin(t){$("adminLog").textContent=t;setTimeout(()=>$("adminLog").textContent="",2300)}
+function adminUI(){$("realtimeToggle").textContent=realtime?"ON":"OFF";$('realtimeToggle').classList.toggle('active',realtime);$('rareToggle').textContent=luckyEnabled?'ON':'OFF';$('rareToggle').classList.toggle('active',luckyEnabled);$('rareMultiplier').value='×'+luckyMultiplier;for(const [id,on] of [['goldBoost',boost.gold],['diamondBoost',boost.diamond],['rainbowBoost',boost.rainbow]]){$(id).textContent=on?'ON':'OFF';$(id).classList.toggle('active',on)}$('goldBoostMult').value=boost.goldMult;$('diamondBoostMult').value=boost.diamondMult;$('rainbowBoostMult').value=boost.rainbowMult;$('fusionLuckToggle').textContent=fusionLuck?'ON':'OFF';$('fusionLuckToggle').classList.toggle('active',fusionLuck)}
+function setupSpawn(){const s=$("forceSpawnSelect");s.innerHTML="";for(const b of allChars){const o=document.createElement("option");o.value=b.id;o.textContent=b.icon+" "+b.name+" / "+b.label;s.appendChild(o)}}
+function openAdmin(){if(adminUser){$("adminPanel").style.display="block";adminUI();return}$("loginPanel").style.display="flex";$("loginError").textContent=""}
+function setupRealtime(){const fb=window.BRFB;if(!fb)return;const ref=fb.doc(fb.db,"gameConfig","live");fb.onSnapshot(ref,s=>{if(!s.exists())return;const d=s.data();if(d.realtime===true){realtime=true;if(typeof d.luckyEnabled==='boolean')luckyEnabled=d.luckyEnabled;if(Number.isFinite(d.luckyMultiplier)&&[2,10,20,50,67,100].includes(Number(d.luckyMultiplier)))luckyMultiplier=Number(d.luckyMultiplier);if(typeof d.fusionLuck==='boolean')fusionLuck=d.fusionLuck;if(d.boost)boost={...boost,...d.boost};if(d.spawn&&d.spawnEventId&&d.spawnEventId!==lastSpawnEvent){lastSpawnEvent=d.spawnEventId;if(gameStarted){const b=findById(d.spawn.id)||allChars.find(x=>x.name===d.spawn.name);if(b)spawnBrain(b,d.spawn.mutation||'normal')}}if(d.message&&d.messageEventId&&d.messageEventId!==lastMessageEvent){lastMessageEvent=d.messageEventId;showMessage('📢 管理者: '+d.message);appendChat(d.message)}}else if(d.realtime===false){realtime=false}update();adminUI()},e=>console.error('realtime',e))}
+function appendChat(text){const box=$("chatHistory");const line=document.createElement("div");line.className="chatLine";line.textContent="📢 管理者: "+text;box.prepend(line)}
+function startLoops(){if(!spawnTimer)spawnTimer=setInterval(()=>spawnBrain(),1000);if(!incomeTimer)incomeTimer=setInterval(()=>{const i=totalIncome();if(i){money+=i;update();save()}},1000)}
+$("musicButton").onclick=toggleMusic;
+$("fusionOpen").onclick=openFusion;$("closeFusion").onclick=()=>$("fusionPanel").style.display="none";$("doFusion").onclick=doFusion;
+$("encyclopediaOpen").onclick=()=>{$("bookPanel").style.display="block";renderBook()};$("closeBook").onclick=()=>$("bookPanel").style.display="none";$("bookCharTab").onclick=()=>{$("bookCharTab").classList.add("active");$("bookMutTab").classList.remove("active");renderBook()};$("bookMutTab").onclick=()=>{$("bookMutTab").classList.add("active");$("bookCharTab").classList.remove("active");renderBook()};
+$("probabilityOpen").onclick=()=>{$("probabilityPanel").style.display="block";renderProbability()};$("closeProbability").onclick=()=>$("probabilityPanel").style.display="none";
+$("reverseOpen").onclick=()=>{$("reversePanel").style.display="block";reverseInfo()};$("closeReverse").onclick=()=>$("reversePanel").style.display="none";
+$("charTab").onclick=()=>{$("charTab").classList.add("active");$("mutTab").classList.remove("active");renderCollection()};$("mutTab").onclick=()=>{$("mutTab").classList.add("active");$("charTab").classList.remove("active");renderCollection()};
+$("adminButton").onclick=openAdmin;$("closeAdmin").onclick=()=>$("adminPanel").style.display="none";
+$("realtimeToggle").onclick=()=>{realtime=!realtime;adminUI();save();if(adminUser){if(realtime)pushLive({realtime:true,luckyEnabled,luckyMultiplier,fusionLuck,boost});else writeLive({realtime:false})}logAdmin(realtime?"🌐 全員リアルタイムON":"📱 自分だけモード")};
+$("rareToggle").onclick=()=>{luckyEnabled=!luckyEnabled;adminUI();update();save();if(adminUser&&realtime)pushLive({luckyEnabled,luckyMultiplier});logAdmin(luckyEnabled?"🍀 レアラックON":"🍀 レアラックOFF")};
+$("rareMultiplier").onchange=()=>{luckyMultiplier=Number($("rareMultiplier").value.replace("×",""))||2;adminUI();update();save();if(adminUser&&realtime)pushLive({luckyEnabled,luckyMultiplier})};
+$("fusionLuckToggle").onclick=()=>{fusionLuck=!fusionLuck;adminUI();update();save();if(adminUser&&realtime)pushLive({fusionLuck});logAdmin(fusionLuck?"🧬 融合ラックON":"🧬 融合ラックOFF")};
+for(const [id,mkey] of [["goldBoost","gold"],["diamondBoost","diamond"],["rainbowBoost","rainbow"]])$(id).onclick=()=>{boost[mkey]=!boost[mkey];adminUI();update();save();if(adminUser&&realtime)pushLive({boost});logAdmin("✨ 変異確率アップを更新")};
+for(const [id,mkey] of [["goldBoostMult","goldMult"],["diamondBoostMult","diamondMult"],["rainbowBoostMult","rainbowMult"]])$(id).onchange=()=>{boost[mkey]=Number($(id).value)||5;adminUI();update();save();if(adminUser&&realtime)pushLive({boost})};
+$("forceSpawn").onclick=()=>{const b=findById($("forceSpawnSelect").value);if(b)spawnBrain(b,$("forceMutation").value)};
+$("forceGlobalSpawn").onclick=()=>{const b=findById($("forceSpawnSelect").value),m=$("forceMutation").value;if(b&&adminUser&&realtime){const id=Date.now()+"_"+Math.random();pushLive({spawn:{id:b.id,name:b.name,mutation:m},spawnEventId:String(id)})}else if(b)showMessage("🌐 全員出現には管理者ログイン＋リアルタイムONが必要")};
+$("spawnOG").onclick=()=>{const b=ogs.find(x=>x.id===$("ogSelect").value);if(b)spawnBrain(b,"normal")};
+$("spawnGlobalOG").onclick=()=>{const b=ogs.find(x=>x.id===$("ogSelect").value);if(b&&adminUser&&realtime){const id=Date.now()+"_"+Math.random();pushLive({spawn:{id:b.id,name:b.name,mutation:"normal"},spawnEventId:String(id)})}else if(b)showMessage("🌐 全員出現にはリアルタイムONが必要")};
+$("addMoney").onclick=()=>{const n=Math.max(0,Math.floor(Number($("moneyAdd").value)||0));money+=n;$("moneyAdd").value="";update();save();logAdmin("💰 "+n.toLocaleString()+"円追加")};
+$("sendBroadcast").onclick=async()=>{const text=$("broadcastMessage").value.trim();if(!text)return;if(!adminUser){logAdmin("ログインしてください");return}if(!realtime){logAdmin("🌐 リアルタイムをONにしてください");return}const fb=window.BRFB,id=Date.now()+"_"+Math.random();try{await fb.setDoc(fb.doc(fb.db,"gameConfig","live"),{message:text,messageEventId:String(id),updatedAt:Date.now(),realtime:true},{merge:true});appendChat(text);$("broadcastMessage").value="";logAdmin("📢 全員に送信しました")}catch(e){console.error(e);logAdmin("❌ 送信失敗")}};
+$("loginButton").onclick=async()=>{const email=$("loginEmail").value.trim(),pw=$("loginPassword").value;if(!email||!pw)return;$("loginError").textContent="ログイン中…";try{const cred=await window.BRFB.signInWithEmailAndPassword(window.BRFB.auth,email,pw);if((cred.user.email||'').toLowerCase()!==ADMIN_EMAIL.toLowerCase()){await window.BRFB.signOut(window.BRFB.auth);throw new Error('not admin')}adminUser=cred.user;$("loginPanel").style.display="none";$("adminPanel").style.display="block";adminUI();logAdmin("👑 管理者ログイン成功")}catch(e){$("loginError").textContent="ログインできませんでした。管理者アカウントか確認してください。"}};
+$("cancelLogin").onclick=()=>$("loginPanel").style.display="none";
+$("doReverse").onclick=doReverse;
+$("resetButton").onclick=()=>{if(confirm("この端末のゲームデータをリセットしますか？図鑑も消えます。")){localStorage.removeItem("brainRoadFinalSave");localStorage.removeItem("brainRoadIntegratedSave");location.reload()}};
+if(window.BRFB)window.BRFB.onAuthStateChanged(window.BRFB.auth,u=>{adminUser=u&&u.email&&(u.email.toLowerCase()===ADMIN_EMAIL.toLowerCase())?u:null});
+load();update();adminUI();setupSpawn();setupRealtime();startLoops();
+</script>
+</body>
+</html>
