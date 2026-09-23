@@ -59,7 +59,7 @@ button{cursor:pointer}
 <div id="game">
 <div id="sky"></div><div id="carpet"></div>
 <div id="ui"><div id="title">🧠 BRAIN ROAD</div><div id="money">💰 500円</div><div id="income">+0円/秒</div><div id="bonusLine">🌟 総合倍率 ×1</div></div>
-<button id="adminButton">⚙️ 管理</button><button id="reverseButton">🔄 逆転</button><button id="encyclopediaButton">📖 図鑑</button><button id="musicButton">🎵 BGM ON</button>
+<button id="adminButton">⚙️ 管理</button><button id="reverseButton">🔄 リバース</button><button id="encyclopediaButton">📖 図鑑</button><button id="musicButton">🎵 BGM ON</button>
 <div id="luckyStatus">🍀 レア率UP</div><div id="liveStatus">🌐 リアルタイム OFF</div><div id="hint">🟥 ブレインロットをタップして購入！</div><div id="message"></div><div id="effect"></div><div id="flash"></div>
 <div id="bottom"><h3>📦 コレクション</h3><div id="cards"></div><button id="fusionOpen">🧬 融合する！</button><button id="resetButton">データをリセット</button></div>
 
@@ -67,7 +67,7 @@ button{cursor:pointer}
 
 <div id="encyclopediaPanel"><div class="panelBox"><h2>📖 ブレイン図鑑</h2><div id="encyProgress"></div><div class="encyTabs"><button class="encyTab active" data-tab="all">通常</button><button class="encyTab" data-tab="gold">🟡 Gold</button><button class="encyTab" data-tab="diamond">💎 Diamond</button><button class="encyTab" data-tab="rainbow">🌈 Rainbow</button><button class="encyTab" data-tab="og">👑 OG</button></div><div id="encyGrid" class="encyGrid"></div><button class="closeBtn" id="closeEncyclopedia">戻る</button></div></div>
 
-<div id="reversePanel"><div class="panelBox"><h2>🔄 逆転システム</h2><div id="reverseInfo"></div><div class="danger">逆転すると、所持金・所持キャラ・変異キャラはリセットされます。<br>ただし図鑑の発見状況、変異図鑑、逆転回数、獲得倍率は残ります。</div><button id="doReverse" class="adminBtn" style="width:100%;margin-top:10px;background:#dc2626">🔄 逆転する</button><button class="closeBtn" id="closeReverse">戻る</button></div></div>
+<div id="reversePanel"><div class="panelBox"><h2>🔄 リバースシステム</h2><div id="reverseInfo"></div><div class="danger">リバースすると、所持金・所持キャラ・変異キャラはリセットされます。<br>ただし図鑑の発見状況、変異図鑑、リバース回数、獲得倍率は残ります。</div><button id="doReverse" class="adminBtn" style="width:100%;margin-top:10px;background:#dc2626">🔄 リバースする</button><button class="closeBtn" id="closeReverse">戻る</button></div></div>
 
 <div id="loginPanel"><div class="panelBox"><h2>🔐 管理者ログイン</h2><div id="loginState">管理機能を使うにはFirebaseメール/パスワードでログインしてください。</div><input id="loginEmail" type="email" placeholder="メールアドレス"><input id="loginPassword" type="password" placeholder="パスワード" style="width:100%;padding:10px;border-radius:9px;border:1px solid #4b5563;background:#111827;color:#fff;margin-top:7px"><button class="adminBtn" id="loginButton" style="width:100%;margin-top:8px">ログイン</button><button class="adminBtn" id="logoutButton" style="width:100%;margin-top:7px">ログアウト</button><button class="closeBtn" id="closeLogin">戻る</button></div></div>
 
@@ -1334,6 +1334,36 @@ function load(){
 }
 function save(){localStorage.setItem("brainRoadRequestedSave",JSON.stringify({money,collection,discovered,mutationCollection,reverseCount,bonusMultiplier}))}
 
+function renderCollection(){
+ const box=$("cards");
+ if(!box)return;
+ box.innerHTML="";
+ const entries=[];
+ for(const b of brains){
+  for(const m of Object.keys(mutationInfo)){
+   const n=owned(b.id,m);
+   if(n>0)entries.push({b,m,n});
+  }
+ }
+ for(const og of ogs){
+  const n=owned(og.id,"normal");
+  if(n>0)entries.push({og,n});
+ }
+ if(!entries.length){
+  box.innerHTML='<div style="grid-column:1/-1;text-align:center;color:#aaa;padding:12px">まだキャラを持っていません</div>';
+  return;
+ }
+ for(const item of entries){
+  const c=document.createElement("div");
+  c.className="card "+(item.og?"og":"");
+  if(item.og){
+   c.innerHTML='<div class="icon">'+item.og.icon+'</div><div>'+item.og.name+'</div><div class="rarityText">👑 OG</div><div class="variantLine">×'+item.n+' / +'+item.og.income.toLocaleString()+'円/秒</div>';
+  }else{
+   c.innerHTML='<div class="icon">'+item.b.icon+'</div><div>'+item.b.name+'</div><div class="rarityText">'+item.b.label+'</div><div class="variantLine">'+mutationInfo[item.m].label+' ×'+item.n+' / +'+effectiveIncome(item.b,item.m).toLocaleString()+'円/秒</div>';
+  }
+  box.appendChild(c);
+ }
+}
 function update(){
  $("money").textContent="💰 "+Math.floor(money).toLocaleString()+"円";
  $("income").textContent="+"+Math.floor(currentIncome()).toLocaleString()+"円/秒";
@@ -1486,13 +1516,13 @@ function setupEncyTabs(){document.querySelectorAll(".encyTab").forEach(btn=>btn.
 /* ============================== 逆転 ============================== */
 function renderReverse(){
  const next=reverseCount+1;const cost=reverseCosts[reverseCount];
- if(reverseCount>=10){$("reverseInfo").innerHTML="<div class=\"reverseCard\"><strong>🏆 逆転MAX達成！</strong><br>10 / 10<br><span class=\"reverseBonus\">総合倍率 ×"+totalGlobalMultiplier()+"まで到達しています。</span></div>";$("doReverse").disabled=true;return}
- $("doReverse").disabled=false;$("reverseInfo").innerHTML='<div class="reverseCard"><div>現在: <strong>'+reverseCount+' / 10</strong></div><div class="reverseCost">次の逆転コスト: '+cost.toLocaleString()+'円</div><div class="reverseBonus">逆転後の追加倍率: +×1</div><div>逆転後総合倍率: ×'+(totalGlobalMultiplier()+1)+'</div></div>';
+ if(reverseCount>=10){$("reverseInfo").innerHTML="<div class=\"reverseCard\"><strong>🏆 リバースMAX達成！</strong><br>10 / 10<br><span class=\"reverseBonus\">総合倍率 ×"+totalGlobalMultiplier()+"まで到達しています。</span></div>";$("doReverse").disabled=true;return}
+ $("doReverse").disabled=false;$("reverseInfo").innerHTML='<div class="reverseCard"><div>現在: <strong>'+reverseCount+' / 10</strong></div><div class="reverseCost">次のリバースコスト: '+cost.toLocaleString()+'円</div><div class="reverseBonus">リバース後の追加倍率: +×1</div><div>リバース後総合倍率: ×'+(totalGlobalMultiplier()+1)+'</div></div>';
 }
 function doReverse(){
- if(reverseCount>=10)return;const cost=reverseCosts[reverseCount];if(money<cost){showMessage("💸 逆転には "+cost.toLocaleString()+"円 必要！");return}
- if(!confirm("逆転すると所持金・キャラ・変異キャラがリセットされます。図鑑は残ります。本当に逆転しますか？"))return;
- money=500;collection={};reverseCount++;save();update();showMessage("🔄 逆転成功！ 総合倍率 ×"+totalGlobalMultiplier());
+ if(reverseCount>=10)return;const cost=reverseCosts[reverseCount];if(money<cost){showMessage("💸 リバースには "+cost.toLocaleString()+"円 必要！");return}
+ if(!confirm("リバースすると所持金・キャラ・変異キャラがリセットされます。図鑑は残ります。本当に逆転しますか？"))return;
+ money=500;collection={};reverseCount++;save();update();showMessage("🔄 リバース成功！ 総合倍率 ×"+totalGlobalMultiplier());
 }
 
 /* ============================== Firebase ============================== */
@@ -1554,7 +1584,7 @@ $("addMoney").onclick=async()=>{const n=Math.max(0,Math.floor(Number($("moneyAdd
 $("forceSpawn").onclick=async()=>{const b=findBrain($("forceSpawnSelect").value);if(!b)return;const m=$("forceMutation").value;if(realtimeEnabled)await writeLive({spawn:{id:b.id,mutation:m}});else spawnBrain(b,m,true);logAdmin(b.icon+" "+b.name+" / "+mutationInfo[m].label+" を出現")};
 $("forceOG").onclick=async()=>{const og=ogs.find(x=>x.id===$("forceOGSelect").value);if(!og)return;if(realtimeEnabled)await writeLive({ogSpawn:{id:og.id}});else spawnOG(og);logAdmin("👑 "+og.name+" を出現")};
 $("chatSend").onclick=async()=>{const t=$("chatInput").value.trim();if(!t)return;if(!realtimeEnabled){showMessage("🌐 リアルタイムONにしてから送信してください");return}await writeLive({message:t});$("chatInput").value="";logAdmin("📢 全員へ送信しました")};
-$("resetButton").onclick=()=>{if(!confirm("所持金・キャラ・変異キャラだけをリセットしますか？図鑑と逆転回数は残ります。"))return;money=500;collection={};save();update();showMessage("🧹 所持データをリセットしました")};
+$("resetButton").onclick=()=>{if(!confirm("所持金・キャラ・変異キャラだけをリセットしますか？図鑑とリバース回数は残ります。"))return;money=500;collection={};save();update();showMessage("🧹 所持データをリセットしました")};
 $("loginButton").onclick=async()=>{const email=$("loginEmail").value.trim(),pw=$("loginPassword").value;try{const cred=await signInWithEmailAndPassword(auth,email,pw);if(cred.user.email!==ADMIN_EMAIL){await signOut(auth);$("loginState").textContent="❌ 管理者メールではありません";return}$("loginPanel").style.display="none";openAdmin();}catch(e){$("loginState").textContent="❌ ログイン失敗: "+(e.code||"unknown")}};
 $("logoutButton").onclick=async()=>{await signOut(auth);$("adminPanel").style.display="none";$("loginState").textContent="ログアウトしました"};$("closeLogin").onclick=()=>$("loginPanel").style.display="none";
 setupEncyTabs();setupForceSpawn();load();update();setupRealtime();
