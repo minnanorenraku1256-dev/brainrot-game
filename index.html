@@ -1527,9 +1527,14 @@ function doReverse(){
 
 /* ============================== Firebase ============================== */
 async function writeLive(data){
- try{await setDoc(doc(db,"gameConfig","live"),{...data,eventId:Date.now().toString()+Math.random().toString(36).slice(2)},{merge:true});return true}catch(e){console.error(e);showMessage("❌ Firebase保存失敗");return false}
+ try{await setDoc(doc(db,"gameConfig","live"),data,{merge:true});return true}catch(e){console.error(e);showMessage("❌ Firebase保存失敗");return false}
 }
-async function broadcast(data){if(!realtimeEnabled){showMessage("🌐 リアルタイムOFFなので自分だけに反映");return false}return writeLive(data)}
+async function writeLiveEvent(type,payload){
+ if(!realtimeEnabled){showMessage("🌐 リアルタイムOFFなので自分だけに反映");return false}
+ const event={id:Date.now().toString()+Math.random().toString(36).slice(2),type,payload};
+ try{await setDoc(doc(db,"gameConfig","live"),{event},{merge:true});return true}catch(e){console.error(e);showMessage("❌ Firebaseイベント送信失敗");return false}
+}
+async function broadcast(data){return writeLiveEvent("message",{text:data?.message||""})}
 function setupRealtime(){
  if(liveUnsubscribe)liveUnsubscribe();
  liveUnsubscribe=onSnapshot(doc(db,"gameConfig","live"),snap=>{if(!snap.exists())return;const d=snap.data();
@@ -1539,11 +1544,13 @@ function setupRealtime(){
   if(typeof d.fusionLuck==="boolean")fusionLuck=d.fusionLuck;
   if(d.mutationBoosts)mutationBoosts={...mutationBoosts,...d.mutationBoosts};
   if(Number.isFinite(d.mutationBoostMultiplier))mutationBoostMultiplier=Math.max(1,Number(d.mutationBoostMultiplier));
-  if(!firebaseLiveStarted){lastRealtimeEventId=d.eventId||null;firebaseLiveStarted=true;update();return}
-  if(d.eventId&&d.eventId!==lastRealtimeEventId){lastRealtimeEventId=d.eventId;
-   if(d.spawn){const b=findBrain(d.spawn.id);if(b&&gameStarted)spawnBrain(b,d.spawn.mutation||"normal",true)}
-   if(d.ogSpawn){const og=ogs.find(x=>x.id===d.ogSpawn.id);if(og&&gameStarted)spawnOG(og)}
-   if(d.message)showMessage("📢 "+d.message)
+  const ev=d.event;
+  if(!firebaseLiveStarted){lastRealtimeEventId=ev?.id||null;firebaseLiveStarted=true;update();return}
+  if(ev?.id&&ev.id!==lastRealtimeEventId){
+   lastRealtimeEventId=ev.id;
+   if(ev.type==="spawn"){const b=findBrain(ev.payload?.id);if(b&&gameStarted)spawnBrain(b,ev.payload?.mutation||"normal",true)}
+   if(ev.type==="ogSpawn"){const og=ogs.find(x=>x.id===ev.payload?.id);if(og&&gameStarted)spawnOG(og)}
+   if(ev.type==="message"&&ev.payload?.text)showMessage("📢 "+ev.payload.text)
   }
   update();save();
  },e=>console.error("Firebase realtime error",e));
@@ -1581,9 +1588,9 @@ for(const [id,key] of [["goldBoostToggle","gold"],["diamondBoostToggle","diamond
 $("mutationBoostMultiplier").onchange=async()=>{mutationBoostMultiplier=Math.min(100,Math.max(1,Math.floor(Number($("mutationBoostMultiplier").value)||1)));update();save();await adminSettingChanged();logAdmin("変異率UP倍率 ×"+mutationBoostMultiplier)};
 $("realtimeToggle").onclick=async()=>{const newState=!realtimeEnabled;realtimeEnabled=newState;update();save();/* OFF状態も全員に伝えるためbroadcast()ではなくwriteLive() */await writeLive({realtimeEnabled,luckyEnabled,luckyMultiplier,fusionLuck,mutationBoosts,mutationBoostMultiplier});logAdmin("🌐 リアルタイム "+(newState?"ON":"OFF")+"を全員へ反映")};
 $("addMoney").onclick=async()=>{const n=Math.max(0,Math.floor(Number($("moneyAdd").value)||0));money+=n;$("moneyAdd").value="";update();save();logAdmin("💰 "+n.toLocaleString()+"円追加")};
-$("forceSpawn").onclick=async()=>{const b=findBrain($("forceSpawnSelect").value);if(!b)return;const m=$("forceMutation").value;if(realtimeEnabled)await writeLive({spawn:{id:b.id,mutation:m}});else spawnBrain(b,m,true);logAdmin(b.icon+" "+b.name+" / "+mutationInfo[m].label+" を出現")};
-$("forceOG").onclick=async()=>{const og=ogs.find(x=>x.id===$("forceOGSelect").value);if(!og)return;if(realtimeEnabled)await writeLive({ogSpawn:{id:og.id}});else spawnOG(og);logAdmin("👑 "+og.name+" を出現")};
-$("chatSend").onclick=async()=>{const t=$("chatInput").value.trim();if(!t)return;if(!realtimeEnabled){showMessage("🌐 リアルタイムONにしてから送信してください");return}await writeLive({message:t});$("chatInput").value="";logAdmin("📢 全員へ送信しました")};
+$("forceSpawn").onclick=async()=>{const b=findBrain($("forceSpawnSelect").value);if(!b)return;const m=$("forceMutation").value;if(realtimeEnabled)await writeLiveEvent("spawn",{id:b.id,mutation:m});else spawnBrain(b,m,true);logAdmin(b.icon+" "+b.name+" / "+mutationInfo[m].label+" を出現")};
+$("forceOG").onclick=async()=>{const og=ogs.find(x=>x.id===$("forceOGSelect").value);if(!og)return;if(realtimeEnabled)await writeLiveEvent("ogSpawn",{id:og.id});else spawnOG(og);logAdmin("👑 "+og.name+" を出現")};
+$("chatSend").onclick=async()=>{const t=$("chatInput").value.trim();if(!t)return;if(!realtimeEnabled){showMessage("🌐 リアルタイムONにしてから送信してください");return}await writeLiveEvent("message",{text:t});$("chatInput").value="";logAdmin("📢 全員へ送信しました")};
 $("resetButton").onclick=()=>{if(!confirm("所持金・キャラ・変異キャラだけをリセットしますか？図鑑とリバース回数は残ります。"))return;money=500;collection={};save();update();showMessage("🧹 所持データをリセットしました")};
 $("loginButton").onclick=async()=>{const email=$("loginEmail").value.trim(),pw=$("loginPassword").value;try{const cred=await signInWithEmailAndPassword(auth,email,pw);if(cred.user.email!==ADMIN_EMAIL){await signOut(auth);$("loginState").textContent="❌ 管理者メールではありません";return}$("loginPanel").style.display="none";openAdmin();}catch(e){$("loginState").textContent="❌ ログイン失敗: "+(e.code||"unknown")}};
 $("logoutButton").onclick=async()=>{await signOut(auth);$("adminPanel").style.display="none";$("loginState").textContent="ログアウトしました"};$("closeLogin").onclick=()=>$("loginPanel").style.display="none";
