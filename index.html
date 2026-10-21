@@ -11,7 +11,7 @@ button,input,select{font:inherit}
 button{cursor:pointer}
 #game{position:fixed;inset:0;overflow:hidden;background:#10131c}
 #sky{position:absolute;inset:0;background:linear-gradient(#17243d 0%,#354b67 55%,#151922 55%,#151922 100%)}
-#carpet{position:absolute;left:0;top:58%;width:100%;height:110px;background:linear-gradient(#720014,#d20b2f 20%,#b80024 50%,#d20b2f 80%,#720014);border-top:7px solid #f5c84c;border-bottom:7px solid #f5c84c;z-index:5}
+#carpet{position:absolute;left:0;top:58%;width:100%;height:150px;background:linear-gradient(#720014,#d20b2f 20%,#b80024 50%,#d20b2f 80%,#720014);border-top:7px solid #f5c84c;border-bottom:7px solid #f5c84c;z-index:5}
 #ui{position:absolute;top:8px;left:0;width:100%;text-align:center;z-index:100;pointer-events:none}
 #title{font-size:25px;font-weight:900;text-shadow:0 3px 8px #000}
 #money{margin-top:5px;font-size:21px;font-weight:900}
@@ -28,7 +28,7 @@ button{cursor:pointer}
 #luckyStatus.active{display:block}
 #liveStatus{position:absolute;top:52px;right:10px;padding:7px 10px;border-radius:12px;background:#334155;color:#fff;font-size:11px;font-weight:900;z-index:150}
 #liveStatus.on{background:#16a34a}
-.brain{position:absolute;top:calc(58% + 17px);left:-130px;width:120px;height:98px;display:flex;align-items:flex-end;justify-content:center;font-size:48px;z-index:30;user-select:none;filter:drop-shadow(0 5px 3px rgba(0,0,0,.6));cursor:pointer}
+.brain{position:absolute;top:calc(58% + 27px);left:-130px;width:120px;height:118px;display:flex;align-items:flex-end;justify-content:center;font-size:48px;z-index:30;user-select:none;filter:drop-shadow(0 5px 3px rgba(0,0,0,.6));cursor:pointer}
 .brain .label{position:absolute;bottom:62px;left:50%;transform:translateX(-50%);white-space:nowrap;text-align:center;font-size:11px;font-weight:900;text-shadow:0 1px 3px #000;pointer-events:none}
 .brain .name{display:block}.brain .rarity{display:block;font-size:10px}.brain .mutation{display:block;font-size:10px}
 .brain .price{position:absolute;bottom:84px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:12px;font-weight:900;color:#fff;background:rgba(0,0,0,.82);padding:3px 7px;border-radius:8px;border:2px solid #f5c84c;text-shadow:0 1px 2px #000;pointer-events:none}
@@ -40,12 +40,12 @@ button{cursor:pointer}
 #cards{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}.card{min-height:61px;padding:4px;border-radius:9px;background:#202534;text-align:center;font-size:10px;font-weight:800;border:1px solid #3b4254}.card .icon{font-size:24px;line-height:25px}.card .rarityText{font-size:9px}.card .variantLine{font-size:9px;color:#fde68a}
 #fusionOpen{width:100%;margin-top:8px;padding:11px;border:0;border-radius:11px;background:#7c3aed;color:#fff;font-size:15px;font-weight:900}
 #resetButton{display:block;margin:6px auto 0;padding:4px 9px;border:1px solid #555;border-radius:7px;background:#191d27;color:#aaa;font-size:10px}
-#overlay,#adminPanel,#fusionPanel,#encyclopediaPanel,#reversePanel,#loginPanel{position:absolute;inset:0;z-index:900;background:rgba(6,9,16,.96);display:none;overflow-y:auto;padding:18px}
+#overlay,#adminPanel,#fusionPanel,#encyclopediaPanel,#reversePanel,#loginPanel,#redeemPanel{position:absolute;inset:0;z-index:900;background:rgba(6,9,16,.96);display:none;overflow-y:auto;padding:18px}
 .panelBox{width:min(94%,700px);margin:0 auto;padding:18px;border-radius:18px;background:#1c2333;border:1px solid #4a5368;box-shadow:0 15px 50px #000}.panelBox h2{margin:0 0 12px;text-align:center}.closeBtn{width:100%;margin-top:12px;padding:11px;border:0;border-radius:11px;background:#343b4e;color:#fff;font-weight:900}
 #fusionChoices{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.fusionChoice{padding:9px;border:2px solid #3f475a;border-radius:11px;background:#252c3d;color:#fff;text-align:left;font-weight:800}.fusionChoice.selected{border-color:#c45cff;background:#49206b}.fusionChoice.slot2{border-color:#60a5fa}.fusionChoice.slot3{border-color:#fbbf24}
 #selectedInfo{text-align:center;margin:9px 0;color:#ddd;font-weight:900}#doFusion{width:100%;padding:13px;border:0;border-radius:11px;background:#4b5563;color:#fff;font-weight:900}#doFusion.ready{background:#c45cff}#fusionResult{text-align:center;min-height:24px;margin-top:8px;font-weight:900}
 .adminRow{display:flex;gap:8px;align-items:center;margin:9px 0;flex-wrap:wrap}.adminRow label{font-weight:800;min-width:165px}.adminRow input,.adminRow select{flex:1;min-width:120px;padding:9px;border-radius:9px;border:1px solid #4b5563;background:#111827;color:#fff}.adminBtn{padding:9px 12px;border:0;border-radius:9px;background:#374151;color:#fff;font-weight:900}.adminBtn.active{background:#16a34a}.adminNote{font-size:12px;color:#b9c1d1;line-height:1.6}#adminLog{margin-top:10px;min-height:25px;text-align:center;color:#86efac;font-weight:800}
-#chatInput{width:100%;padding:10px;border-radius:9px;border:1px solid #4b5563;background:#111827;color:#fff;margin-top:5px}#chatSend{width:100%;margin-top:6px}
+.codeListItem{border:1px solid #465168;border-radius:10px;padding:10px;margin:8px 0;background:#151b29}.codeListItem small{color:#cbd5e1}.codeEffects{display:flex;gap:8px;flex-wrap:wrap}.codeEffects label{display:flex;align-items:center;gap:5px;font-size:13px}.codeAction{padding:7px 10px;border:0;border-radius:8px;background:#374151;color:#fff;font-weight:800;margin:4px 4px 0 0}.codeStatus{font-size:12px;color:#a7f3d0;min-height:20px}#redeemButton{position:absolute;top:52px;left:10px;z-index:300;border:0;border-radius:10px;padding:7px 10px;background:#7c3aed;color:#fff;font-size:11px;font-weight:900}#redeemCode{width:100%;padding:11px;border-radius:9px;border:1px solid #4b5563;background:#111827;color:#fff;margin:8px 0}.timerBox{background:#111827;border:1px solid #4b5563;border-radius:10px;padding:10px;margin:8px 0}.codeListItem button{font-size:12px}#chatInput{width:100%;padding:10px;border-radius:9px;border:1px solid #4b5563;background:#111827;color:#fff;margin-top:5px}#chatSend{width:100%;margin-top:6px}
 .encyTabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px}.encyTab{white-space:nowrap;padding:8px 10px;border:0;border-radius:9px;background:#374151;color:#fff;font-weight:900}.encyTab.active{background:#7c3aed}.encyGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.encyCard{padding:7px;border-radius:9px;background:#202534;border:1px solid #3b4254;text-align:center;font-size:10px;font-weight:800}.encyCard .big{font-size:25px}.encyCard.unknown{color:#9ca3af}.progress{height:9px;border-radius:99px;background:#111827;overflow:hidden;margin:7px 0}.progress>div{height:100%;width:0;background:#22c55e}
 .reverseCard{padding:12px;border-radius:12px;background:#252c3d;border:1px solid #4b5563;margin:7px 0}.reverseCost{font-size:19px;font-weight:900;color:#fde68a}.reverseBonus{color:#86efac;font-weight:900}.danger{color:#fca5a5;font-size:12px;line-height:1.5}
 #effect{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:30px;font-weight:900;opacity:0;pointer-events:none;z-index:800000;text-shadow:0 0 10px #000,0 0 25px gold}.showGod{animation:god 1.3s}.showSecret{animation:secret 1.8s}.showOG{animation:ogEffect 2.4s}
@@ -59,11 +59,13 @@ button{cursor:pointer}
 <div id="game">
 <div id="sky"></div><div id="carpet"></div>
 <div id="ui"><div id="title">🧠 BRAIN ROAD</div><div id="money">💰 500円</div><div id="income">+0円/秒</div><div id="bonusLine">🌟 総合倍率 ×1</div></div>
-<button id="adminButton">⚙️ 管理</button><button id="reverseButton">🔄 リバース</button><button id="encyclopediaButton">📖 図鑑</button><button id="musicButton">🎵 BGM ON</button>
+<button id="adminButton">⚙️ 管理</button><button id="redeemButton">🎟️ コード</button><button id="reverseButton">🔄 リバース</button><button id="encyclopediaButton">📖 図鑑</button><button id="musicButton">🎵 BGM ON</button>
 <div id="luckyStatus">🍀 レア率UP</div><div id="liveStatus">🌐 リアルタイム OFF</div><div id="hint">🟥 ブレインロットをタップして購入！</div><div id="message"></div><div id="effect"></div><div id="flash"></div>
 <div id="bottom"><h3>📦 コレクション</h3><div id="cards"></div><button id="fusionOpen">🧬 融合する！</button><button id="resetButton">データをリセット</button></div>
 
-<div id="fusionPanel"><div class="panelBox"><h2>🧬 3体を選んで融合</h2><div id="selectedInfo">0 / 3 選択中</div><div id="fusionChoices"></div><button id="doFusion">3体を選んでください</button><div id="fusionResult"></div><button class="closeBtn" id="closeFusion">戻る</button></div></div>
+<div id="fusionPanel"><div class="panelBox"><h2>🧬 3体を選んで融合</h2><div id="fusionTimerStatus" class="timerBox">融合ごとに30分かかります。</div><div id="selectedInfo">0 / 3 選択中</div><div id="fusionChoices"></div><button id="doFusion">3体を選んでください</button><div id="fusionResult"></div><button class="closeBtn" id="closeFusion">戻る</button></div></div>
+
+<div id="redeemPanel"><div class="panelBox"><h2>🎟️ コード入力</h2><div class="adminNote">コードはプレイヤー1人につき1回だけ使用できます。先着人数に達したコードは終了します。</div><input id="redeemCode" maxlength="40" placeholder="コードを入力（例：LEGEND30）"><button class="adminBtn" id="redeemCodeButton" style="width:100%">コードを使う</button><div id="redeemStatus" class="codeStatus"></div><button class="closeBtn" id="closeRedeem">戻る</button></div></div>
 
 <div id="encyclopediaPanel"><div class="panelBox"><h2>📖 ブレイン図鑑</h2><div id="encyProgress"></div><div class="encyTabs"><button class="encyTab active" data-tab="all">通常</button><button class="encyTab" data-tab="gold">🟡 Gold</button><button class="encyTab" data-tab="diamond">💎 Diamond</button><button class="encyTab" data-tab="rainbow">🌈 Rainbow</button><button class="encyTab" data-tab="og">👑 OG</button></div><div id="encyGrid" class="encyGrid"></div><button class="closeBtn" id="closeEncyclopedia">戻る</button></div></div>
 
@@ -84,6 +86,15 @@ button{cursor:pointer}
 <div class="adminRow"><label>👾 キャラ即出現</label><select id="forceSpawnSelect"></select><button class="adminBtn" id="forceSpawn">出現</button></div>
 <div class="adminRow"><label>✨ 強制変異</label><select id="forceMutation"><option value="normal">⚪ 通常</option><option value="gold">🟡 Gold</option><option value="diamond">💎 Diamond</option><option value="rainbow">🌈 Rainbow</option></select></div>
 <div class="adminRow"><label>👑 OG即出現</label><select id="forceOGSelect"></select><button class="adminBtn" id="forceOG">出現</button></div>
+<div class="adminRow"><label>🧬 融合タイマー</label><button class="adminBtn" id="resetFusionTimer">⏱️ タイマーをリセット</button></div>
+<hr style="border-color:#465168;margin:14px 0">
+<h3>🎟️ コード作成</h3>
+<div class="adminRow"><label>コード名</label><input id="newCodeName" maxlength="40" placeholder="例：LEGEND30"></div>
+<div class="adminRow"><label>先着人数（空欄＝∞）</label><input id="newCodeLimit" type="number" min="1" step="1" placeholder="空欄なら無制限"></div>
+<div class="adminNote">効果（複数選択可）</div>
+<div class="codeEffects"><label><input type="checkbox" id="codeEffectRare" checked> ✨ 次のスポーンでランダムレアキャラ</label><label><input type="checkbox" id="codeEffectFusionReset"> ⏱️ 融合タイマーリセット</label></div>
+<button class="adminBtn" id="createCode" style="width:100%;margin-top:8px">＋ コードを作成</button><div id="codeCreateStatus" class="codeStatus"></div>
+<h3 style="margin-top:16px">📋 作成済みコード</h3><div id="adminCodeList" class="adminNote">読み込み中...</div>
 <div class="adminRow"><label>📢 全員チャット</label><input id="chatInput" maxlength="80" placeholder="全プレイヤーに送るメッセージ"></div><button class="adminBtn" id="chatSend">📢 全員へ送信</button>
 <div id="adminLog"></div><button class="closeBtn" id="closeAdmin">閉じる</button></div></div>
 </div>
@@ -91,7 +102,7 @@ button{cursor:pointer}
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-import {getFirestore,doc,setDoc,onSnapshot} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+import {getFirestore,doc,setDoc,onSnapshot,collection as firestoreCollection,getDocs,runTransaction,deleteDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 const firebaseConfig={
  apiKey:"AIzaSyDkEvi4OWL5I0f6jgsYDYWWhYdDr0GMnhY",
@@ -106,6 +117,8 @@ const firebaseApp=initializeApp(firebaseConfig);
 const auth=getAuth(firebaseApp);
 const db=getFirestore(firebaseApp);
 const ADMIN_EMAIL="minnanorenraku1256@gmail.com";
+let playerId=localStorage.getItem("brainRoadPlayerId");
+if(!playerId){playerId="player_"+Date.now().toString(36)+Math.random().toString(36).slice(2,12);localStorage.setItem("brainRoadPlayerId",playerId)}
 
 const $=id=>document.getElementById(id);
 
@@ -1303,6 +1316,11 @@ let musicTimer=null;
 let incomeTimer=null;
 let spawnTimer=null;
 let fusionSelected=[];
+const FUSION_DURATION_MS=30*60*1000;
+let pendingFusions=[];
+let fusionTimerInterval=null;
+let pendingRareSpawn=false;
+let codeListUnsubscribe=null;
 let firebaseLiveStarted=false;
 let lastRealtimeEventId=null;
 let currentUser=null;
@@ -1330,9 +1348,10 @@ function load(){
   if(s.mutationCollection)mutationCollection=s.mutationCollection;
   if(Number.isFinite(s.reverseCount))reverseCount=Math.min(10,Math.max(0,s.reverseCount));
   if(Number.isFinite(s.bonusMultiplier))bonusMultiplier=Math.max(1,s.bonusMultiplier);
+  if(Array.isArray(s.pendingFusions))pendingFusions=s.pendingFusions.filter(x=>x&&Number.isFinite(x.finishAt)&&Array.isArray(x.selected));
  }catch(e){console.error(e)}
 }
-function save(){localStorage.setItem("brainRoadRequestedSave",JSON.stringify({money,collection,discovered,mutationCollection,reverseCount,bonusMultiplier}))}
+function save(){localStorage.setItem("brainRoadRequestedSave",JSON.stringify({money,collection,discovered,mutationCollection,reverseCount,bonusMultiplier,pendingFusions}))}
 
 function renderCollection(){
  const box=$("cards");
@@ -1434,6 +1453,7 @@ function registerDiscovery(id,mutation="normal"){discovered[id]=true;mutationCol
 
 function spawnBrain(forced=null,forcedMutation=null,skipOG=false){
  if(!gameStarted)return;
+ if(!forced&&!skipOG&&pendingRareSpawn){pendingRareSpawn=false;const rarePool=brains.filter(b=>["rare","epic","brainrotgod","secret"].includes(b.rarity)&&b.chance>0);const pick=rarePool[Math.floor(Math.random()*rarePool.length)];if(pick){forced=pick;skipOG=true;showMessage("🎟️ コード効果！レアキャラ出現！")}}
  if(!forced&&!skipOG){const og=chooseOG();if(og){spawnOG(og);return}}
  const data=forced||chooseBrain();const mutation=forcedMutation||chooseMutation();registerDiscovery(data.id,mutation);
  const el=document.createElement("div");el.className="brain "+data.rarity+" mut-"+mutation;
@@ -1441,14 +1461,14 @@ function spawnBrain(forced=null,forcedMutation=null,skipOG=false){
  let x=-130;el.style.left=x+"px";$("game").appendChild(el);
  if(data.rarity==="brainrotgod"||data.rarity==="secret")rareEffect(data,mutation,false);
  let dead=false;
- function move(){if(!el.isConnected||dead)return;x+=2.2;el.style.left=x+"px";if(x>innerWidth+130){dead=true;el.remove();return}requestAnimationFrame(move)}
+ function move(){if(!el.isConnected||dead)return;x+=1.15;el.style.left=x+"px";if(x>innerWidth+130){dead=true;el.remove();return}requestAnimationFrame(move)}
  function buy(){audio();if(dead||!el.isConnected)return;if(money<data.price){showMessage("💸 "+data.name+" は "+data.price.toLocaleString()+"円 必要！");return}money-=data.price;addOwned(data.id,mutation);registerDiscovery(data.id,mutation);dead=true;el.remove();purchaseSound();showMessage(data.icon+" "+data.name+" "+mutationInfo[mutation].label+" GET！");update();save()}
  el.addEventListener("click",buy);el.addEventListener("touchstart",e=>{e.preventDefault();buy()},{passive:false});requestAnimationFrame(move);update();save();
 }
 function spawnOG(og){
  registerDiscovery(og.id,"normal");
  const el=document.createElement("div");el.className="brain og";el.innerHTML='<span class="price">👑 OG</span><span class="label"><span class="name">'+og.name+'</span><span class="rarity">👑 OG</span></span><span>'+og.icon+'</span>';let x=-130;el.style.left=x+"px";$("game").appendChild(el);rareEffect(og,"normal",true);let dead=false;
- function move(){if(!el.isConnected||dead)return;x+=2.2;el.style.left=x+"px";if(x>innerWidth+130){dead=true;el.remove();return}requestAnimationFrame(move)}
+ function move(){if(!el.isConnected||dead)return;x+=1.15;el.style.left=x+"px";if(x>innerWidth+130){dead=true;el.remove();return}requestAnimationFrame(move)}
  function buy(){audio();if(dead||!el.isConnected)return;if(money<og.price){showMessage("💸 OGは "+og.price.toLocaleString()+"円 必要！");return}money-=og.price;const k=collectionKey(og.id,"normal");collection[k]=(collection[k]||0)+1;dead=true;el.remove();ogSound();showMessage("👑 OG "+og.name+" GET！！");update();save()}
  el.addEventListener("click",buy);el.addEventListener("touchstart",e=>{e.preventDefault();buy()},{passive:false});requestAnimationFrame(move);update();save()
 }
@@ -1487,14 +1507,34 @@ function fusionMutation(selected){
 }
 function doFusion(){
  if(fusionSelected.length!==3){$("fusionResult").textContent="🧬 必ず3体選んでください！";return}
- let power=0;const selectedData=[];
- for(const s of fusionSelected){const b=findBrain(s.id);if(!b||owned(s.id,s.mutation)<=0){showMessage("❌ 所持数が足りません");return}selectedData.push(b);power+=effectiveIncome(b,s.mutation)}
- for(const s of fusionSelected)removeOwned(s.id,s.mutation);
- /* Secret 3体のみ: 隠しOG 0.00005%。確率表には絶対に出さない。 */
+ let power=0;const selectedData=[];const selected=fusionSelected.map(x=>({...x}));
+ for(const item of selected){const b=findBrain(item.id);if(!b||owned(item.id,item.mutation)<=0){showMessage("❌ 所持数が足りません");return}selectedData.push({id:b.id,name:b.name,rarity:b.rarity});power+=effectiveIncome(b,item.mutation)}
+ for(const item of selected)removeOwned(item.id,item.mutation);
  const allSecret=selectedData.every(b=>b.rarity==="secret");
- if(allSecret&&Math.random()<0.0000005){const og=ogs[Math.floor(Math.random()*ogs.length)];const result={...og,rarity:"og"};addOwned(result.id,"normal");registerDiscovery(result.id,"normal");fusionSelected=[];save();update();renderFusionChoices();$("fusionResult").innerHTML="👑✨ 隠しOG！！ "+result.icon+" "+result.name+" が誕生！<br>（Secret3体融合の超低確率）";rareEffect(result,"normal",true);return}
- let result=weightedFusionResult(power);let mutation=fusionMutation(fusionSelected);registerDiscovery(result.id,mutation);addOwned(result.id,mutation);fusionSelected=[];save();update();renderFusionChoices();$("fusionResult").innerHTML="🧬 融合パワー <strong>"+Math.floor(power).toLocaleString()+"円/秒</strong><br>✨ "+result.icon+" "+result.name+" "+mutationInfo[mutation].label+" が誕生！";showMessage("🧬 融合成功！ "+result.name+" GET！");if(result.rarity==="fusiongod"||result.rarity==="fusionsecret")rareEffect(result,mutation,false)
+ let resultSpec;
+ if(allSecret&&Math.random()<0.0000005){const og=ogs[Math.floor(Math.random()*ogs.length)];resultSpec={id:og.id,mutation:"normal",isOG:true}}
+ else{const result=weightedFusionResult(power);resultSpec={id:result.id,mutation:fusionMutation(selected),isOG:false}}
+ pendingFusions.push({id:"fusion_"+Date.now()+Math.random().toString(36).slice(2),finishAt:Date.now()+FUSION_DURATION_MS,power,selected,result:resultSpec});
+ fusionSelected=[];save();update();renderFusionChoices();renderFusionTimerStatus();
+ $("fusionResult").textContent="⏳ 融合を開始しました！完成まで30分かかります。";showMessage("🧬 融合開始！30分後に完成！");
 }
+function renderFusionTimerStatus(){
+ const el=$("fusionTimerStatus");if(!el)return;
+ if(!pendingFusions.length){el.textContent="融合ごとに30分かかります。現在、進行中の融合はありません。";return}
+ el.innerHTML="進行中の融合：<strong>"+pendingFusions.length+"件</strong>"+pendingFusions.map((f,i)=>"<div>融合 "+(i+1)+"：<strong>"+formatDuration(Math.max(0,f.finishAt-Date.now()))+"</strong> 残り</div>").join("");
+}
+function formatDuration(ms){const total=Math.max(0,Math.ceil(ms/1000));const h=Math.floor(total/3600),m=Math.floor((total%3600)/60),sec=total%60;return (h? h+"時間 ":"")+m+"分 "+String(sec).padStart(2,"0")+"秒"}
+function finishDueFusions(){
+ const now=Date.now(),due=pendingFusions.filter(f=>f.finishAt<=now);if(!due.length){renderFusionTimerStatus();return}
+ pendingFusions=pendingFusions.filter(f=>f.finishAt>now);
+ for(const f of due){
+  if(f.resultSpec?.isOG){const og=ogs.find(x=>x.id===f.resultSpec.id);if(og){addOwned(og.id,"normal");registerDiscovery(og.id,"normal");showMessage("👑✨ 融合完成！OG "+og.name+" GET！");rareEffect({...og,rarity:"og"},"normal",true)}}
+  else{const result=findBrain(f.resultSpec?.id);if(result){addOwned(result.id,f.resultSpec.mutation||"normal");registerDiscovery(result.id,f.resultSpec.mutation||"normal");showMessage("🧬 融合完成！"+result.name+" GET！");if(result.rarity==="fusiongod"||result.rarity==="fusionsecret")rareEffect(result,f.resultSpec.mutation||"normal",false)}}
+ }
+ save();update();renderFusionTimerStatus();
+}
+function resetFusionTimers(){if(!pendingFusions.length){logAdmin("進行中の融合はありません");return}if(!confirm("進行中のすべての融合タイマーを30分に戻しますか？所持キャラや融合結果は変更しません。"))return;pendingFusions.forEach(f=>f.finishAt=Date.now()+FUSION_DURATION_MS);save();renderFusionTimerStatus();logAdmin("⏱️ 融合タイマーを30分にリセットしました")}
+
 
 /* ============================== 図鑑 ============================== */
 function completionStats(){const total=brains.length;const found=brains.filter(b=>discovered[b.id]).length;return {total,found,done:found>=total}}
@@ -1556,6 +1596,49 @@ function setupRealtime(){
  },e=>console.error("Firebase realtime error",e));
 }
 
+/* ============================== コードシステム ============================== */
+function codeDocId(name){return String(name||"").trim().toUpperCase().replace(/\s+/g,"")}
+async function createEventCode(){
+ if(!adminAllowed()){logAdmin("管理者ログインが必要です");return}
+ const name=String($("newCodeName").value||"").trim().toUpperCase();const id=codeDocId(name);const rawLimit=String($("newCodeLimit").value||"").trim();
+ if(!id){$("codeCreateStatus").textContent="コード名を入力してください";return}
+ if(!/^[A-Z0-9_-]+$/.test(id)){$("codeCreateStatus").textContent="コード名は英数字・ハイフン・アンダーバーで入力してください";return}
+ let limit=null;if(rawLimit!==""){limit=Number(rawLimit);if(!Number.isSafeInteger(limit)||limit<1){$("codeCreateStatus").textContent="先着人数は1以上の整数か、空欄にしてください";return}}
+ const effects=[];if($("codeEffectRare").checked)effects.push("rareNextSpawn");if($("codeEffectFusionReset").checked)effects.push("fusionTimerReset");if(!effects.length){$("codeCreateStatus").textContent="効果を1つ以上選んでください";return}
+ try{const ref=doc(db,"eventCodes",id);await runTransaction(db,async tx=>{const snap=await tx.get(ref);if(snap.exists())throw new Error("CODE_EXISTS");tx.set(ref,{name,id,limit,usedCount:0,usedBy:[],effects,createdAt:Date.now(),createdBy:currentUser?.email||"admin"})});$("newCodeName").value="";$("newCodeLimit").value="";$("codeCreateStatus").textContent="✅ コード "+name+" を作成しました。既存のリアルタイムチャットで発表できます。";await renderAdminCodeList();logAdmin("🎟️ コード "+name+" を作成しました")}catch(e){console.error(e);$("codeCreateStatus").textContent=e.message==="CODE_EXISTS"?"同じコード名がすでにあります":"作成に失敗しました。FirebaseのFirestoreルールを確認してください"}
+}
+async function renderAdminCodeList(){
+ const box=$("adminCodeList");if(!box)return;
+ try{
+  const snap=await getDocs(firestoreCollection(db,"eventCodes"));
+  if(snap.empty){box.textContent="作成済みコードはありません";return}
+  box.innerHTML="";
+  snap.docs.sort((a,b)=>(b.data().createdAt||0)-(a.data().createdAt||0)).forEach(ds=>{
+   const d=ds.data(),limit=Number.isFinite(d.limit)?d.limit:null,used=Number(d.usedCount)||0;
+   const remaining=limit===null?"∞ 無制限":Math.max(0,limit-used)+"人";
+   const div=document.createElement("div");div.className="codeListItem";
+   const effects=(d.effects||[]).map(x=>x==="rareNextSpawn"?"✨次スポーンでレア":"⏱️融合タイマーリセット").join("＋");
+   const statusText=limit!==null&&used>=limit?"定員到達":"受付中";div.innerHTML=`<strong>${escapeHTML(d.name||ds.id)}</strong>　<span>${statusText}</span><br><small>獲得者：${used} / ${limit===null?"∞":limit}　残り：${remaining}<br>効果：${escapeHTML(effects)}</small><br><button class="codeAction" data-copy="${escapeHTML(d.name||ds.id)}">コード名をコピー</button><button class="codeAction" data-delete="${escapeHTML(ds.id)}">削除</button>`;
+   box.appendChild(div);
+  });
+  box.querySelectorAll("[data-copy]").forEach(b=>{b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.copy);logAdmin("コード名をコピーしました")}catch(e){logAdmin("コード名："+b.dataset.copy)}}});
+  box.querySelectorAll("[data-delete]").forEach(b=>{b.onclick=async()=>{if(!confirm("コード "+b.dataset.delete+" を削除しますか？削除後は新しく使用できません。"))return;try{await deleteDoc(doc(db,"eventCodes",b.dataset.delete));await renderAdminCodeList();logAdmin("コードを削除しました")}catch(e){console.error(e);logAdmin("削除できませんでした")}}});
+ }catch(e){console.error(e);box.textContent="コード一覧を読み込めません。Firestoreのルールを確認してください。"}
+}
+function escapeHTML(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;", "'":"&#39;"}[c]))}
+async function redeemEventCode(){
+ const id=codeDocId($("redeemCode").value);const status=$("redeemStatus");if(!id){status.textContent="コードを入力してください";return}
+ status.textContent="確認中...";
+ try{
+  let effects=[];
+  await runTransaction(db,async tx=>{const ref=doc(db,"eventCodes",id);const snap=await tx.get(ref);if(!snap.exists())throw new Error("CODE_NOT_FOUND");const d=snap.data(),usedBy=Array.isArray(d.usedBy)?d.usedBy:[],usedCount=Number(d.usedCount)||0,limit=Number.isFinite(d.limit)?d.limit:null;if(usedBy.includes(playerId))throw new Error("ALREADY_USED");if(limit!==null&&usedCount>=limit)throw new Error("SOLD_OUT");effects=Array.isArray(d.effects)?d.effects:[];tx.update(ref,{usedBy:[...usedBy,playerId],usedCount:usedCount+1})});
+  for(const effect of effects){if(effect==="rareNextSpawn")pendingRareSpawn=true;if(effect==="fusionTimerReset")resetOwnFusionTimersFromCode()}
+  status.textContent="✅ コード成功！効果が適用されました。";showMessage("🎟️ コード成功！");save();await renderAdminCodeList();
+ }catch(e){console.error(e);const messages={CODE_NOT_FOUND:"❌ コードが見つかりません",ALREADY_USED:"❌ このコードはもう使用済みです",SOLD_OUT:"❌ 先着人数に達しました"};status.textContent=messages[e.message]||"❌ コードを使用できませんでした。通信またはFirestoreルールを確認してください"}
+}
+function resetOwnFusionTimersFromCode(){if(!pendingFusions.length){showMessage("⏱️ リセット対象の融合タイマーはありません");return}pendingFusions.forEach(f=>f.finishAt=Date.now()+FUSION_DURATION_MS);save();renderFusionTimerStatus();showMessage("⏱️ 融合タイマーを30分にリセット！")}
+function startCodeListListener(){if(codeListUnsubscribe)codeListUnsubscribe();codeListUnsubscribe=onSnapshot(firestoreCollection(db,"eventCodes"),()=>{if(adminAllowed())renderAdminCodeList()},e=>console.error("code list error",e))}
+
 /* ============================== 管理UI ============================== */
 function updateAdminUI(){
  $("rareToggle").textContent=luckyEnabled?"ON":"OFF";$("rareToggle").classList.toggle("active",luckyEnabled);$("rareMultiplier").value=String(luckyMultiplier);
@@ -1567,7 +1650,7 @@ function updateAdminUI(){
 }
 function logAdmin(t){$("adminLog").textContent=t;setTimeout(()=>$("adminLog").textContent="",2200)}
 function adminAllowed(){return !!currentUser&&currentUser.email===ADMIN_EMAIL}
-function openAdmin(){if(!adminAllowed()){$("loginPanel").style.display="block";return}updateAdminUI();$("adminPanel").style.display="block"}
+function openAdmin(){if(!adminAllowed()){$("loginPanel").style.display="block";return}updateAdminUI();$("adminPanel").style.display="block";renderAdminCodeList()}
 function closeAdmin(){$("adminPanel").style.display="none"}
 function setupForceSpawn(){const s=$("forceSpawnSelect");s.innerHTML="";for(const b of allNormalBrains()){const o=document.createElement("option");o.value=b.id;o.textContent=b.icon+" "+b.name+" / "+b.label;s.appendChild(o)}const ogsEl=$("forceOGSelect");ogsEl.innerHTML="";for(const og of ogs){const o=document.createElement("option");o.value=og.id;o.textContent=og.icon+" "+og.name;ogsEl.appendChild(o)}}
 async function adminSettingChanged(){update();save();if(realtimeEnabled)await writeLive({realtimeEnabled,luckyEnabled,luckyMultiplier,fusionLuck,mutationBoosts,mutationBoostMultiplier})}
@@ -1577,6 +1660,7 @@ onAuthStateChanged(auth,user=>{currentUser=user||null;if(user&&user.email!==ADMI
 
 /* ============================== イベント ============================== */
 $("musicButton").onclick=toggleMusic;
+$("redeemButton").onclick=()=>{$("redeemPanel").style.display="block";$("redeemStatus").textContent=""};$("closeRedeem").onclick=()=>$("redeemPanel").style.display="none";$("redeemCodeButton").onclick=redeemEventCode;$("createCode").onclick=createEventCode;$("resetFusionTimer").onclick=resetFusionTimers;
 $("fusionOpen").onclick=openFusion;$("closeFusion").onclick=closeFusion;$("doFusion").onclick=doFusion;
 $("encyclopediaButton").onclick=()=>{$("encyclopediaPanel").style.display="block";renderEncyclopedia()};$("closeEncyclopedia").onclick=()=>$("encyclopediaPanel").style.display="none";
 $("reverseButton").onclick=()=>{$("reversePanel").style.display="block";renderReverse()};$("closeReverse").onclick=()=>$("reversePanel").style.display="none";$("doReverse").onclick=doReverse;
@@ -1594,7 +1678,7 @@ $("chatSend").onclick=async()=>{const t=$("chatInput").value.trim();if(!t)return
 $("resetButton").onclick=()=>{if(!confirm("所持金・キャラ・変異キャラだけをリセットしますか？図鑑とリバース回数は残ります。"))return;money=500;collection={};save();update();showMessage("🧹 所持データをリセットしました")};
 $("loginButton").onclick=async()=>{const email=$("loginEmail").value.trim(),pw=$("loginPassword").value;try{const cred=await signInWithEmailAndPassword(auth,email,pw);if(cred.user.email!==ADMIN_EMAIL){await signOut(auth);$("loginState").textContent="❌ 管理者メールではありません";return}$("loginPanel").style.display="none";openAdmin();}catch(e){$("loginState").textContent="❌ ログイン失敗: "+(e.code||"unknown")}};
 $("logoutButton").onclick=async()=>{await signOut(auth);$("adminPanel").style.display="none";$("loginState").textContent="ログアウトしました"};$("closeLogin").onclick=()=>$("loginPanel").style.display="none";
-setupEncyTabs();setupForceSpawn();load();update();setupRealtime();
+setupEncyTabs();setupForceSpawn();load();update();setupRealtime();startCodeListListener();renderFusionTimerStatus();if(!fusionTimerInterval)fusionTimerInterval=setInterval(finishDueFusions,1000);
 
 /* ============================== ゲーム開始 ============================== */
 function startGame(){if(gameStarted)return;gameStarted=true;try{audio();musicOn=true;musicLoop()}catch(e){}spawnBrain();if(!spawnTimer)spawnTimer=setInterval(()=>spawnBrain(),1000);if(!incomeTimer)incomeTimer=setInterval(()=>{const inc=currentIncome();if(inc){money+=inc;update();save()}},1000)}
