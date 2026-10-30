@@ -101,7 +101,7 @@ button{cursor:pointer}
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signInAnonymously,signOut} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import {getFirestore,doc,setDoc,onSnapshot,collection as firestoreCollection,getDocs,runTransaction,deleteDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 const firebaseConfig={
@@ -117,8 +117,12 @@ const firebaseApp=initializeApp(firebaseConfig);
 const auth=getAuth(firebaseApp);
 const db=getFirestore(firebaseApp);
 const ADMIN_EMAIL="minnanorenraku1256@gmail.com";
-let playerId=localStorage.getItem("brainRoadPlayerId");
-if(!playerId){playerId="player_"+Date.now().toString(36)+Math.random().toString(36).slice(2,12);localStorage.setItem("brainRoadPlayerId",playerId)}
+let playerId=null;
+async function ensurePlayerAuth(){
+ if(auth.currentUser)return auth.currentUser;
+ const credential=await signInAnonymously(auth);
+ return credential.user;
+}
 
 const $=id=>document.getElementById(id);
 
@@ -1630,6 +1634,7 @@ async function redeemEventCode(){
  const id=codeDocId($("redeemCode").value);const status=$("redeemStatus");if(!id){status.textContent="コードを入力してください";return}
  status.textContent="確認中...";
  try{
+  const player=await ensurePlayerAuth();playerId=player.uid;
   let effects=[];
   await runTransaction(db,async tx=>{const ref=doc(db,"eventCodes",id);const snap=await tx.get(ref);if(!snap.exists())throw new Error("CODE_NOT_FOUND");const d=snap.data(),usedBy=Array.isArray(d.usedBy)?d.usedBy:[],usedCount=Number(d.usedCount)||0,limit=Number.isFinite(d.limit)?d.limit:null;if(usedBy.includes(playerId))throw new Error("ALREADY_USED");if(limit!==null&&usedCount>=limit)throw new Error("SOLD_OUT");effects=Array.isArray(d.effects)?d.effects:[];tx.update(ref,{usedBy:[...usedBy,playerId],usedCount:usedCount+1})});
   for(const effect of effects){if(effect==="rareNextSpawn")pendingRareSpawn=true;if(effect==="fusionTimerReset")resetOwnFusionTimersFromCode()}
@@ -1656,7 +1661,7 @@ function setupForceSpawn(){const s=$("forceSpawnSelect");s.innerHTML="";for(cons
 async function adminSettingChanged(){update();save();if(realtimeEnabled)await writeLive({realtimeEnabled,luckyEnabled,luckyMultiplier,fusionLuck,mutationBoosts,mutationBoostMultiplier})}
 
 /* ============================== Auth ============================== */
-onAuthStateChanged(auth,user=>{currentUser=user||null;if(user&&user.email!==ADMIN_EMAIL)showMessage("🔐 管理者メールではありません");updateAdminUI()});
+onAuthStateChanged(auth,user=>{currentUser=user||null;if(user&&!user.isAnonymous&&user.email!==ADMIN_EMAIL)showMessage("🔐 管理者メールではありません");updateAdminUI()});
 
 /* ============================== イベント ============================== */
 $("musicButton").onclick=toggleMusic;
